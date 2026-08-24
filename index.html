@@ -1797,35 +1797,39 @@ function renderPetugas(){
 }
 
 function lihatAduanPetugas(nama){
-  const value = decodeURIComponent(nama);
+  const value = decodeURIComponent(nama || "").trim();
+  if(!value) return;
 
-  // Simpan nama petugas yang dipilih sebagai filter aduan yang sedang aktif.
-  // Nilai ini dipasang setelah panel Data Aduan ditampilkan agar input Search
-  // benar-benar terisi secara visual dan filter langsung bekerja.
-  window.geparuPetugasSearchValue = value;
-
+  // Pindah ke Data Aduan tanpa mengubah sumber data atau filter lain.
   showDataAduan();
 
-  const applyPetugasSearch = () => {
-    const search = document.getElementById("search");
-    if(!search) return;
+  const search = document.getElementById("search");
+  if(!search) return;
 
-    search.value = value;
-    search.setAttribute("value", value);
-    currentPage = 1;
+  // Isi input secara langsung menggunakan setter native agar nilai benar-benar
+  // masuk ke elemen input yang sedang ditampilkan, lalu picu event input.
+  const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+  if(nativeSetter) nativeSetter.call(search, value);
+  else search.value = value;
+  search.setAttribute("value", value);
+  search.dispatchEvent(new Event("input", {bubbles:true}));
 
-    // Jalankan mekanisme pencarian yang sama seperti ketika admin mengetik
-    // nama petugas secara manual.
-    search.dispatchEvent(new Event("input", {bubbles:true}));
+  currentPage = 1;
+  render();
+  search.focus();
+  try{ search.setSelectionRange(search.value.length, search.value.length); }catch(e){}
+
+  // Pastikan setelah panel selesai dirender, nilai Search tetap terlihat.
+  requestAnimationFrame(()=>{
+    const el=document.getElementById("search");
+    if(!el) return;
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+    if(setter) setter.call(el, value); else el.value=value;
+    el.setAttribute("value", value);
+    el.dispatchEvent(new Event("input", {bubbles:true}));
+    currentPage=1;
     render();
-    search.focus();
-  };
-
-  // Jalankan sekali sekarang dan sekali setelah browser selesai menggambar
-  // panel. Ini mencegah nilai Search tertimpa saat perpindahan menu.
-  applyPetugasSearch();
-  requestAnimationFrame(applyPetugasSearch);
-  setTimeout(applyPetugasSearch, 0);
+  });
 }
 
 function showOverview(){
