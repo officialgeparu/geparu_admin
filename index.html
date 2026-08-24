@@ -1179,29 +1179,22 @@ async function startDashboardAfterLogin(){
   if(dashboardStarted) return;
   dashboardStarted=true;
 
-  // Saat dashboard pertama kali dibuka, data ADUAN dan MASTER PETUGAS
-  // dimuat bersamaan dan ditunggu sampai selesai. Dengan begitu ketika
-  // menu Petugas dibuka, tabel master + Ringkasan Penanganan Aduan
-  // sudah langsung memiliki data tanpa perlu menekan Refresh.
-  const hasil = await Promise.allSettled([
-    initPetugasMaster(),
-    loadAduan()
-  ]);
+  // Muat data aduan DAN master petugas sejak dashboard selesai dibuka.
+  // Dengan begitu saat menu Petugas dibuka, tabel dan ringkasan sudah siap
+  // tanpa harus menekan Refresh terlebih dahulu.
+  initPetugasMaster().catch(e=>{
+    console.warn("Gagal memuat master petugas saat startup:",e);
+  });
 
-  const aduanResult = hasil[1];
-  if(aduanResult && aduanResult.status === "rejected"){
+  loadAduan().catch(e=>{
     rows=[];
     ["total","diterima","diverifikasi","ditindaklanjuti","selesai","ditolak"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent="0";});
     const tbody=document.getElementById("tbody");
     if(tbody) tbody.innerHTML='<tr><td colspan="8" class="empty">Gagal memuat data Supabase. Klik Refresh untuk mencoba lagi.</td></tr>';
     const info=document.getElementById("recordInfo");
     if(info) info.textContent="Menampilkan 0 - 0 dari 0 data";
-    console.error("Gagal memuat aduan:",aduanResult.reason);
-  }
-
-  // Pastikan ringkasan langsung dihitung setelah kedua sumber data selesai.
-  renderPetugas();
-  renderPetugasMaster();
+    console.error("Gagal memuat aduan:",e);
+  });
 }
 
 async function openDashboardIfApproved(){
@@ -1287,11 +1280,6 @@ async function loadAduan(){
   currentPage = 1;
   updateCards();
   render();
-  // Jika panel Petugas sedang terbuka, ringkasan langsung ikut diperbarui
-  // setiap kali data aduan selesai terbaca.
-  if(document.getElementById("petugasPanel")?.style.display !== "none"){
-    renderPetugas();
-  }
 }
 
 function norm(v){ return String(v ?? "").toLowerCase(); }
@@ -1811,26 +1799,34 @@ function renderPetugas(){
 function lihatAduanPetugas(nama){
   const value = decodeURIComponent(nama || "").trim();
 
-  // Pindah ke Data Aduan. Setelah panel aktif, isi kolom Search dengan
-  // NAMA PETUGAS yang dipilih dan paksa event input agar filter langsung jalan.
+  // 1) Pindah ke panel Data Aduan.
   showDataAduan();
 
+  // 2) Paksa kolom pencarian Data Aduan berisi NAMA PETUGAS
+  //    yang diklik dari Ringkasan Penanganan Aduan.
+  //    Jangan hanya mengandalkan event input; isi value secara langsung
+  //    lalu render ulang supaya filter benar-benar aktif.
   const search = document.getElementById("search");
   if(!search) return;
 
-  // Reset filter lain supaya hasil benar-benar fokus ke petugas yang dipilih.
-  const statusFilter = document.getElementById("statusFilter");
-  const dateFilter = document.getElementById("dateFilter");
-  if(statusFilter) statusFilter.value = "";
-  if(dateFilter) dateFilter.value = "";
-
   search.value = value;
+  search.setAttribute("value", value);
   currentPage = 1;
 
-  // Jalankan filter setelah nilai search benar-benar terpasang di input.
+  // Jalankan event input juga agar semua listener pencarian ikut bekerja.
   search.dispatchEvent(new Event("input", {bubbles:true}));
   render();
-  search.focus();
+
+  // Pastikan value tetap terpasang setelah render/pemindahan panel.
+  requestAnimationFrame(()=>{
+    const s = document.getElementById("search");
+    if(s){
+      s.value = value;
+      s.setAttribute("value", value);
+      s.focus();
+      try{s.setSelectionRange(s.value.length,s.value.length);}catch(e){}
+    }
+  });
 }
 
 function showOverview(){
@@ -1905,8 +1901,6 @@ async function loadPetugasFromSupabase(){
   petugasMasterData=Array.isArray(rows)?rows:[];
   petugasDbConnected=true;
   renderPetugasMaster();
-  // Master petugas berubah -> ringkasan juga harus langsung diperbarui.
-  renderPetugas();
   return petugasMasterData;
 }
 
