@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard GEPARU — PT.Adiimasa  Distribusi Indonesia| Client Final</title>
+<title>Dashboard GEPARU — PT Adiimasa  Distribusi Indonesia| Client Final</title>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -769,7 +769,7 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
     </div>
   </section>
 
-  <div class="footer">Copyright 2026 © Reserved by PT.Adiimasa Distribusi Indonesia &nbsp;•&nbsp; Modul Sosial &nbsp;•&nbsp; Client GEPARU</div>
+  <div class="footer">Copyright 2026 © Reserved by PT Adiimasa Distribusi Indonesia &nbsp;•&nbsp; Modul Sosial &nbsp;•&nbsp; Client GEPARU</div>
 </main>
 </div>
 
@@ -783,14 +783,14 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
           <div class="setting-title">Profil Client</div>
           <label class="setting-label">Nama Client</label><input class="settings-input" id="setClientName" value="GEPARU">
           <label class="setting-label">Nama Organisasi</label><input class="settings-input" id="setOrgName" value="Generasi Padjajaran Baru">
-          <label class="setting-label">Deskripsi</label><textarea class="settings-input" id="setDescription" rows="3">Client Modul Sosial di bawah naungan PT.Adiimasa Distribusi Indonesia.</textarea>
+          <label class="setting-label">Deskripsi</label><textarea class="settings-input" id="setDescription" rows="3">Client Modul Sosial di bawah naungan PT Adiimasa Distribusi Indonesia.</textarea>
           <label class="setting-label">WhatsApp / Kontak</label><input class="settings-input" id="setContact" placeholder="Belum diisi">
         </div>
 
         <div class="setting-card">
           <div class="setting-title">Identitas Platform</div>
           <div class="setting-desc">Identitas inti platform tetap mengikuti struktur utama.</div>
-          <label class="setting-label">Naungan</label><input class="settings-input" value="PT.Adiimasa Distribusi Indonesia" readonly>
+          <label class="setting-label">Naungan</label><input class="settings-input" value="PT Adiimasa Distribusi Indonesia" readonly>
           <label class="setting-label">Modul</label><input class="settings-input" value="Sosial" readonly>
           <label class="setting-label">Client</label><input class="settings-input" value="GEPARU" readonly>
         </div>
@@ -820,11 +820,11 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
         <div class="setting-card">
           <div class="setting-title">Informasi Sistem</div>
           <div class="setting-desc">Informasi dasar modul.</div>
-          <div class="system-row"><span>Platform</span><b>PT.Adiimasa Distribusi Indonesia</b></div>
+          <div class="system-row"><span>Platform</span><b>PT Adiimasa Distribusi Indonesia</b></div>
           <div class="system-row"><span>Modul</span><b>Sosial</b></div>
           <div class="system-row"><span>Client</span><b>GEPARU</b></div>
           <div class="system-row"><span>Tahun</span><b>2026</b></div>
-          <div class="copyright-settings">Copyright 2026 © Reserved by PT.Adiimasa Distribusi Indonesia</div>
+          <div class="copyright-settings">Copyright 2026 © Reserved by PT Adiimasa Distribusi Indonesia</div>
         </div>
       </div>
       <div class="settings-actions"><button class="settings-btn" id="btnResetSettings" type="button">Reset</button><button class="settings-btn primary" id="btnSaveSettings" type="button">Simpan Pengaturan</button></div>
@@ -976,7 +976,7 @@ async function registerPendingCoreAccess(){
   const res=await fetch(SUPABASE_URL+"/rest/v1/geparu_admin_access",{
     method:"POST",
     headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+currentAccessToken,"Content-Type":"application/json","Accept":"application/json","Prefer":"return=representation"},
-    body:JSON.stringify({email,client_code:"GEPARU",client_name:"GEPARU",role:"admin",is_active:false,approval_status:"PENDING",core_name:"PT.Adiimasa Distribusi Indonesia",module_slug:"sosial"})
+    body:JSON.stringify({email,client_code:"GEPARU",client_name:"GEPARU",role:"admin",is_active:false,approval_status:"PENDING",core_name:"PT Adiimasa Distribusi Indonesia",module_slug:"sosial"})
   });
   if(res.ok){
     const data=await res.json().catch(()=>[]);
@@ -1000,7 +1000,7 @@ function showCoreApprovalGate(status="PENDING",note=""){
   if(s==="APPROVED") return false;
   if(s==="REJECTED") text="Akses ditolak oleh Core Adiimasa. "+(note?"\n\nCatatan: "+note:"");
   else if(s==="SUSPENDED") text="Akses akun ini sedang ditangguhkan oleh Core Adiimasa.";
-  else text="✓ Login Gmail berhasil.\n\nAkses Dashboard GEPARU masih menunggu persetujuan Core Adiimasa — PT.Adiimasa Distribusi Indonesia.\n\nModul: SOSIAL\nClient: GEPARU";
+  else text="✓ Login Gmail berhasil.\n\nAkses Dashboard GEPARU masih menunggu persetujuan Core Adiimasa — PT Adiimasa Distribusi Indonesia.\n\nModul: SOSIAL\nClient: GEPARU";
   showAdminLogin(text,false);
   if(msg){msg.style.whiteSpace="pre-line";msg.style.color=s==="REJECTED"||s==="SUSPENDED"?"#b42318":"#8a5a00";}
   return true;
@@ -2075,7 +2075,7 @@ async function initPetugasMaster(){
 
 const GEPARU_SETTINGS_KEY="geparu_client_settings_ui_v1";
 placeSettingsPanel();
-const DEFAULT_GEPARU_SETTINGS={clientName:"GEPARU",orgName:"Generasi Padjajaran Baru",description:"Client Modul Sosial di bawah naungan PT.Adiimasa Distribusi Indonesia.",contact:"",notifWA:false,notifEmail:false,notifStatus:false};
+const DEFAULT_GEPARU_SETTINGS={clientName:"GEPARU",orgName:"Generasi Padjajaran Baru",description:"Client Modul Sosial di bawah naungan PT Adiimasa Distribusi Indonesia.",contact:"",notifWA:false,notifEmail:false,notifStatus:false};
 const PENGATURAN_URL = SUPABASE_URL + "/rest/v1/pengaturan_geparu";
 let pengaturanDbRow = null;
 
