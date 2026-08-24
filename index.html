@@ -195,6 +195,413 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
 .sidebar-logout-btn:hover{background:rgba(255,255,255,.14)}
 .sidebar-logout-btn:active{transform:translateY(1px)}
 </style>
+
+<style id="geparu-final-responsive-mobile">
+/* =========================================================
+   RESPONSIVE TAMBAHAN - HP & TABLET
+   Hanya override CSS existing, tanpa mengubah HTML/JS/fungsi.
+   ========================================================= */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+  }
+
+  .main {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    padding: 18px;
+  }
+
+  .top {
+    gap: 12px;
+  }
+
+  .top h1 {
+    font-size: 24px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .panel-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .controls {
+    width: 100%;
+  }
+
+  .controls input,
+  .controls select,
+  .controls button {
+    max-width: 100%;
+  }
+
+  .client {
+    min-width: 0;
+  }
+}
+
+/* HP besar / portrait */
+@media (max-width: 750px) {
+  .app {
+    display: block;
+    min-height: 100vh;
+  }
+
+  /*
+   * Sidebar tetap dipertahankan secara visual, tetapi menjadi
+   * bar atas agar konten tidak terjepit oleh margin-left.
+   */
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    left: auto;
+    top: auto;
+    bottom: auto;
+    padding: 10px 12px;
+    overflow: visible;
+  }
+
+  .brand {
+    padding: 4px 8px 10px;
+    text-align: center;
+  }
+
+  .brand-logo {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 6px;
+  }
+
+  .brand small {
+    font-size: 9px;
+    margin-bottom: 2px;
+  }
+
+  .brand strong {
+    font-size: 17px;
+  }
+
+  .brand span {
+    font-size: 10px;
+    margin-top: 3px;
+  }
+
+  .nav {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+
+  .nav button {
+    width: auto;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 9px 11px;
+    margin-bottom: 0;
+    font-size: 12px;
+  }
+
+  .sidebar-bottom {
+    position: static;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    border-top: 0;
+    padding-top: 5px;
+    margin-top: 5px;
+  }
+
+  .sidebar-bottom b {
+    font-size: 13px;
+  }
+
+  .sidebar-bottom span {
+    font-size: 9px;
+    margin-top: 2px;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+    padding: 12px;
+  }
+
+  .top {
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+
+  .top h1 {
+    font-size: 21px;
+    line-height: 1.25;
+  }
+
+  .breadcrumb {
+    font-size: 11px;
+  }
+
+  .client {
+    width: 100%;
+    min-width: 0;
+    padding: 9px 11px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .card {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .card .label {
+    font-size: 10px;
+  }
+
+  .card .num {
+    font-size: 22px;
+    margin-top: 5px;
+  }
+
+  .panel {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .panel-head {
+    margin-bottom: 10px;
+  }
+
+  .panel-head h2 {
+    font-size: 16px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .controls input,
+  .controls select,
+  .controls button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  input {
+    min-width: 0;
+  }
+
+  .table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 920px;
+  }
+
+  .table-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pagination {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .detail-grid .k {
+    margin-top: 6px;
+  }
+
+  .modal-backdrop {
+    padding: 10px;
+  }
+
+  .modal {
+    max-height: 94vh;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .modal-head h3 {
+    font-size: 16px;
+  }
+
+  #settingsPanel .settings-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .settings-actions {
+    flex-direction: column;
+  }
+
+  .settings-actions button {
+    width: 100%;
+  }
+
+  .petugas-master-tools {
+    align-items: stretch;
+  }
+
+  .petugas-master-tools .left {
+    width: 100%;
+  }
+
+  .petugas-master-tools input,
+  .petugas-master-tools select,
+  .petugas-master-tools button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .petugas-panel {
+    overflow: hidden;
+  }
+
+  .petugas-master-table,
+  .petugas-table {
+    min-width: 760px;
+  }
+
+  .petugas-modal {
+    padding: 10px;
+  }
+
+  .petugas-modal-box {
+    max-height: 94vh;
+    overflow-y: auto;
+  }
+
+  .petugas-form {
+    padding: 14px;
+  }
+
+  .petugas-modal-foot {
+    padding: 12px 14px;
+    flex-wrap: wrap;
+  }
+
+  .petugas-modal-foot button {
+    flex: 1 1 120px;
+  }
+}
+
+/* HP kecil */
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 8px 9px;
+  }
+
+  .brand-logo {
+    width: 54px;
+    height: 54px;
+  }
+
+  .brand strong {
+    font-size: 15px;
+  }
+
+  .nav {
+    gap: 4px;
+  }
+
+  .nav button {
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+
+  .main {
+    padding: 9px;
+  }
+
+  .top h1 {
+    font-size: 18px;
+  }
+
+  .breadcrumb {
+    font-size: 10px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  .card .label {
+    font-size: 9px;
+  }
+
+  .card .num {
+    font-size: 20px;
+  }
+
+  .panel {
+    padding: 10px;
+  }
+
+  .panel-head h2 {
+    font-size: 15px;
+  }
+
+  .modal {
+    padding: 13px;
+  }
+
+  .detail-grid {
+    font-size: 12px;
+  }
+}
+
+/* HP sangat kecil */
+@media (max-width: 360px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .top h1 {
+    font-size: 17px;
+  }
+
+  .nav button {
+    font-size: 10px;
+    padding: 7px 8px;
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="geparuAdminLoginOverlay" aria-modal="true" role="dialog">
