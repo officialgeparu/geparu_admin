@@ -1797,36 +1797,35 @@ function renderPetugas(){
 }
 
 function lihatAduanPetugas(nama){
-  const value = decodeURIComponent(nama || "").trim();
+  const value = decodeURIComponent(nama);
 
-  // 1) Pindah ke panel Data Aduan.
+  // Simpan nama petugas yang dipilih sebagai filter aduan yang sedang aktif.
+  // Nilai ini dipasang setelah panel Data Aduan ditampilkan agar input Search
+  // benar-benar terisi secara visual dan filter langsung bekerja.
+  window.geparuPetugasSearchValue = value;
+
   showDataAduan();
 
-  // 2) Paksa kolom pencarian Data Aduan berisi NAMA PETUGAS
-  //    yang diklik dari Ringkasan Penanganan Aduan.
-  //    Jangan hanya mengandalkan event input; isi value secara langsung
-  //    lalu render ulang supaya filter benar-benar aktif.
-  const search = document.getElementById("search");
-  if(!search) return;
+  const applyPetugasSearch = () => {
+    const search = document.getElementById("search");
+    if(!search) return;
 
-  search.value = value;
-  search.setAttribute("value", value);
-  currentPage = 1;
+    search.value = value;
+    search.setAttribute("value", value);
+    currentPage = 1;
 
-  // Jalankan event input juga agar semua listener pencarian ikut bekerja.
-  search.dispatchEvent(new Event("input", {bubbles:true}));
-  render();
+    // Jalankan mekanisme pencarian yang sama seperti ketika admin mengetik
+    // nama petugas secara manual.
+    search.dispatchEvent(new Event("input", {bubbles:true}));
+    render();
+    search.focus();
+  };
 
-  // Pastikan value tetap terpasang setelah render/pemindahan panel.
-  requestAnimationFrame(()=>{
-    const s = document.getElementById("search");
-    if(s){
-      s.value = value;
-      s.setAttribute("value", value);
-      s.focus();
-      try{s.setSelectionRange(s.value.length,s.value.length);}catch(e){}
-    }
-  });
+  // Jalankan sekali sekarang dan sekali setelah browser selesai menggambar
+  // panel. Ini mencegah nilai Search tertimpa saat perpindahan menu.
+  applyPetugasSearch();
+  requestAnimationFrame(applyPetugasSearch);
+  setTimeout(applyPetugasSearch, 0);
 }
 
 function showOverview(){
