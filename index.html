@@ -1178,6 +1178,14 @@ function setupAdminLoginUI(){
 async function startDashboardAfterLogin(){
   if(dashboardStarted) return;
   dashboardStarted=true;
+
+  // Muat data aduan DAN master petugas sejak dashboard selesai dibuka.
+  // Dengan begitu saat menu Petugas dibuka, tabel dan ringkasan sudah siap
+  // tanpa harus menekan Refresh terlebih dahulu.
+  initPetugasMaster().catch(e=>{
+    console.warn("Gagal memuat master petugas saat startup:",e);
+  });
+
   loadAduan().catch(e=>{
     rows=[];
     ["total","diterima","diverifikasi","ditindaklanjuti","selesai","ditolak"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent="0";});
