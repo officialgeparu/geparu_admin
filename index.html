@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard GEPARU — PT.Adiimasa Distribusi Indonesia</title>
+<title>Dashboard GEPARU — PT.Adiimasa Distribusi Indonesia | Client Final</title>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -71,6 +71,15 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
 .page-btn{min-width:34px;height:34px;border:1px solid #d7dee8;background:#fff;border-radius:7px;cursor:pointer;color:#263447}
 .page-btn.active{background:#173b63;color:#fff;border-color:#173b63}
 .page-btn:disabled{opacity:.45;cursor:not-allowed}
+
+.petugas-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.petugas-tools input{flex:1;max-width:360px;border:1px solid #d9e2ec;border-radius:8px;padding:10px 12px;background:#fff;outline:none}
+.petugas-table{width:100%;border-collapse:collapse}
+.petugas-table th,.petugas-table td{padding:12px 10px;border-bottom:1px solid #edf1f5;text-align:left;font-size:12px}
+.petugas-table th{background:#f7f9fb;color:#52657a;font-size:11px;text-transform:none}
+.petugas-table td.num{text-align:center;font-weight:700}
+.petugas-empty{text-align:center;color:#718096;padding:35px 10px}
+@media(max-width:900px){.petugas-table{min-width:760px}.petugas-panel{overflow:auto}.petugas-tools{flex-wrap:wrap}}
 .footer{margin-top:18px;color:#8995a5;font-size:11px}
 .detail-btn{border:0;background:#173b63;color:#fff;border-radius:7px;padding:7px 10px;font-size:11px;cursor:pointer}
 .modal-backdrop{position:fixed;inset:0;background:rgba(5,18,34,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
@@ -82,78 +91,405 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
 .detail-grid{display:grid;grid-template-columns:150px 1fr;gap:10px 14px;font-size:13px}
 .detail-grid .k{color:#718096;font-weight:700}
 .detail-grid .v{color:#172033;word-break:break-word}
-/* =========================
-   RESPONSIVE LAYOUT
-   Desktop tetap penuh seperti versi awal.
-   Tablet dan HP menyesuaikan lebar layar tanpa memaksa
-   sidebar 210px di samping layar.
-   ========================= */
 @media(max-width:1100px){
-  .cards{grid-template-columns:repeat(3,minmax(150px,1fr))}
-  .top{align-items:flex-start}
+  .cards{grid-template-columns:repeat(3,1fr)}
 }
-
-@media(max-width:900px){
-  .sidebar{width:250px;transform:translateX(-102%);transition:transform .25s ease;z-index:1000;box-shadow:10px 0 30px rgba(0,0,0,.18)}
-  .main{margin-left:0;width:100%;padding:18px}
-  .mobile-menu{display:flex}
-  .mobile-overlay{display:none}
-  body.sidebar-open .sidebar{transform:translateX(0)}
-  body.sidebar-open .mobile-overlay{display:block}
-  .top{padding-top:44px}
-}
-
 @media(max-width:750px){
-  .main{padding:14px}
-  .top{align-items:stretch;flex-direction:column;gap:12px;margin-bottom:16px}
-  .top h1{font-size:24px}
-  .breadcrumb{line-height:1.5}
-  .client{width:100%;min-width:0}
-  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
-  .card{padding:13px}
-  .card .num{font-size:24px}
-  .panel{padding:12px;border-radius:10px}
-  .panel-head{align-items:stretch;flex-direction:column;gap:10px}
-  .panel-head h2{font-size:16px}
-  .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .controls input,.controls select,.controls .primary{width:100%;min-width:0}
-  .controls input{grid-column:1 / -1}
-  .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
-  table{min-width:900px}
-  th,td{padding:10px 9px;font-size:11px}
-  .table-footer{align-items:flex-start;flex-direction:column}
-  .pagination{max-width:100%;overflow-x:auto;padding-bottom:2px}
-  .modal-backdrop{padding:10px}
-  .modal{max-height:92vh;padding:16px}
-  .detail-grid{grid-template-columns:105px 1fr;gap:8px 10px;font-size:12px}
-  .footer{line-height:1.5}
+  .sidebar{width:210px}
+  .main{margin-left:210px;width:calc(100% - 210px);padding:16px}
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .top{align-items:flex-start;flex-direction:column}
+  .client{width:100%}
+  input{min-width:180px}
 }
 
-@media(max-width:430px){
-  .cards{grid-template-columns:1fr 1fr}
+@media (max-width: 900px){
+  #settingsPanel .panel > div > div{
+    grid-template-columns:1fr !important;
+  }
+}
+
+.settings-grid{width:100%}.setting-card{border:1px solid #e5eaf0;border-radius:12px;padding:16px;background:#fff}
+.setting-title{font-weight:800;color:#263447;margin-bottom:4px}.setting-desc{font-size:12px;color:#718096;margin-bottom:14px;line-height:1.45}
+.setting-label{display:block;font-size:11px;color:#718096;margin:11px 0 5px}.settings-input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #d9e2ec;border-radius:8px;background:#fff;color:#263447;font:inherit}
+.settings-input:focus{outline:none;border-color:#467db8;box-shadow:0 0 0 2px rgba(70,125,184,.12)}.settings-input[readonly]{background:#f7f9fb}
+.settings-note{font-size:11px;color:#718096;margin-top:9px}.status-list{display:flex;flex-wrap:wrap;gap:8px}
+.status-list span{padding:7px 10px;border-radius:999px;background:#f3f6fa;font-size:11px;font-weight:700;color:#34495e}
+.setting-check{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #edf1f5;font-size:12px}.setting-check span{display:flex;flex-direction:column;gap:2px}.setting-check small,.access-box small{font-size:11px;color:#718096}
+.access-box{padding:10px;border-radius:8px;background:#f7f9fb;margin-bottom:9px;display:flex;flex-direction:column;gap:3px;font-size:12px}
+.system-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:12px}.system-row span{color:#718096}
+.copyright-settings{border-top:1px solid #edf1f5;margin-top:6px;padding-top:10px;text-align:right;color:#718096;font-size:11px}
+.settings-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.settings-btn{border:1px solid #d9e2ec;background:#fff;color:#163b66;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:700;cursor:pointer}.settings-btn.primary{background:#163f6b;color:#fff;border-color:#163f6b}.settings-message{text-align:right;min-height:16px}
+@media(max-width:900px){.settings-grid{grid-template-columns:1fr!important}}
+
+#settingsPanel{width:100%;box-sizing:border-box;margin:0 0 18px}
+#settingsPanel .settings-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:12px !important}
+#settingsPanel .setting-card{padding:13px}
+#settingsPanel .setting-desc{margin-bottom:9px}
+#settingsPanel .setting-label{margin:7px 0 4px}
+#settingsPanel .settings-input{padding:8px}
+#settingsPanel .setting-check{padding:7px 0}
+#settingsPanel .access-box{padding:8px;margin-bottom:7px}
+#settingsPanel .settings-note{margin-top:6px}
+@media(max-width:1100px){#settingsPanel .settings-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important}}
+@media(max-width:900px){#settingsPanel .settings-grid{grid-template-columns:1fr !important}}
+
+/* FIX NOTIFIKASI: beri ruang penuh dan cegah teks terpotong */
+.settings-grid .setting-card:nth-child(4){
+  grid-column: span 2;
+}
+.setting-check{
+  width:100%;
+  box-sizing:border-box;
+}
+.setting-check > span{
+  min-width:0;
+  flex:1;
+  overflow:visible;
+}
+.setting-check > span b,
+.setting-check > span small{
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+}
+@media(max-width:900px){
+  .settings-grid .setting-card:nth-child(4){
+    grid-column: span 1;
+  }
+}
+
+
+/* MASTER PETUGAS UI */
+.petugas-master-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}.petugas-master-tools .left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.petugas-master-tools input{min-width:240px;border:1px solid #d9e2ec;border-radius:8px;padding:10px 12px;background:#fff;outline:none}.petugas-master-tools select{padding:10px 12px}.petugas-master-table{width:100%;border-collapse:collapse;min-width:850px}.petugas-master-table th{background:#f5f8fb;color:#46617e;text-align:left;font-size:12px;padding:13px 12px;border-bottom:1px solid #e0e7ef}.petugas-master-table td{padding:14px 12px;border-bottom:1px solid #edf1f5;font-size:13px;color:#263f5c}.petugas-master-table .empty{text-align:center;color:#7890a9;padding:45px 10px}.petugas-status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:bold}.petugas-status.active{background:#e9f8f0;color:#138047}.petugas-status.inactive{background:#f1f3f5;color:#68798b}.petugas-action{display:flex;gap:6px;flex-wrap:wrap}.petugas-action button{padding:7px 10px;font-size:12px}.petugas-modal{display:none;position:fixed;inset:0;background:rgba(5,22,39,.48);align-items:center;justify-content:center;padding:20px;z-index:50}.petugas-modal.show{display:flex}.petugas-modal-box{background:#fff;border-radius:13px;width:100%;max-width:560px;box-shadow:0 18px 55px rgba(0,0,0,.22);overflow:hidden}.petugas-modal-head{padding:18px 20px;border-bottom:1px solid #e5ebf1;display:flex;justify-content:space-between;align-items:center}.petugas-modal-head h3{margin:0;font-size:19px}.petugas-close{background:transparent;border:0;font-size:22px;padding:0;color:#6b8098;cursor:pointer}.petugas-form{padding:20px}.petugas-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.petugas-field{display:flex;flex-direction:column;gap:6px}.petugas-field.full{grid-column:1/-1}.petugas-field label{font-size:12px;color:#4d6784}.petugas-field input,.petugas-field select,.petugas-field textarea{width:100%;box-sizing:border-box;border:1px solid #d9e2ec;border-radius:8px;padding:10px;background:#fff;font:inherit}.petugas-modal-foot{padding:15px 20px;border-top:1px solid #e5ebf1;display:flex;justify-content:flex-end;gap:8px}.petugas-notice{background:#f5f8fb;border-left:3px solid #2d6aa3;padding:11px 13px;color:#5b7390;font-size:12px;margin-top:15px;border-radius:5px}@media(max-width:650px){.petugas-grid{grid-template-columns:1fr}.petugas-field.full{grid-column:auto}.petugas-master-tools .left{width:100%}.petugas-master-tools input{width:100%;min-width:0}}
+</style>
+
+/* =========================================================
+   RESPONSIVE TAMBAHAN — ADMIN GEPARU
+   HANYA MENGATUR TAMPILAN, TIDAK MENGUBAH DATA/JAVASCRIPT
+   ========================================================= */
+
+/* Tablet */
+@media (max-width: 1100px){
+  .sidebar{width:220px}
+  .main{margin-left:220px;width:calc(100% - 220px);padding:20px}
+  .cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .top{gap:14px}
+  .client{min-width:210px}
+}
+
+/* Mobile */
+@media (max-width: 760px){
+  .app{display:block;min-height:100vh}
+
+  .sidebar{
+    position:relative;
+    left:auto;
+    top:auto;
+    bottom:auto;
+    width:100%;
+    height:auto;
+    min-height:0;
+    padding:12px 12px 14px;
+    overflow:visible;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:2px 6px 12px;
+    text-align:left;
+  }
+
+  .brand-logo{
+    width:58px;
+    height:58px;
+    margin:0;
+    flex:0 0 58px;
+  }
+
+  .brand small{font-size:9px;margin-bottom:2px}
+  .brand strong{font-size:17px}
+  .brand span{font-size:10px;margin-top:3px}
+
+  .nav{
+    margin-top:10px;
+    display:flex;
+    gap:7px;
+    overflow-x:auto;
+    padding:1px 0 4px;
+    scrollbar-width:thin;
+  }
+
+  .nav button{
+    width:auto;
+    flex:0 0 auto;
+    margin:0;
+    padding:10px 12px;
+    white-space:nowrap;
+    font-size:12px;
+  }
+
+  .sidebar-bottom{
+    position:static;
+    margin:9px 0 0;
+    padding-top:9px;
+    text-align:left;
+  }
+
+  .sidebar-bottom b{font-size:14px}
+  .sidebar-bottom span{font-size:10px;margin-top:2px}
+
+  .sidebar-logout-btn{
+    margin-top:8px;
+    font-size:11px;
+    padding:9px 11px;
+  }
+
+  .main{
+    margin-left:0;
+    width:100%;
+    padding:14px;
+  }
+
+  .top{
+    flex-direction:column;
+    align-items:stretch;
+    gap:12px;
+    margin-bottom:16px;
+  }
+
+  .top h1{font-size:23px;line-height:1.25}
+  .breadcrumb{font-size:11px;line-height:1.5}
+  .client{width:100%;min-width:0;font-size:10px;padding:10px 12px}
+  .client b{font-size:12px}
+
+  .cards{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    margin-bottom:14px;
+  }
+
+  .card{padding:13px}
   .card .label{font-size:11px}
-  .card .num{font-size:22px}
+  .card .num{font-size:23px;margin-top:5px}
+
+  .panel{padding:13px;border-radius:10px}
+  .panel-head{
+    align-items:stretch;
+    flex-direction:column;
+    gap:10px;
+  }
+  .panel-head h2{font-size:16px}
+
+  .controls{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+  }
+
+  .controls input,
+  .controls select,
+  .controls button{
+    width:100%;
+    min-width:0;
+  }
+
+  .controls input{grid-column:1/-1}
+  .controls .primary{min-height:40px}
+
+  .table-wrap{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  table{min-width:920px}
+  th,td{padding:10px 9px;font-size:11px}
+
+  .table-footer{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:9px;
+  }
+
+  .pagination{width:100%;overflow-x:auto;padding-bottom:2px}
+
+  .detail-btn{padding:7px 9px;font-size:10px;white-space:nowrap}
+
+  .detail-grid{grid-template-columns:1fr;gap:5px 0;font-size:12px}
+  .detail-grid .k{margin-top:7px}
+
+  .modal-backdrop{padding:10px}
+  .modal{max-width:none;max-height:94vh;padding:15px;border-radius:11px}
+
+  #detailActions > div:nth-child(2){
+    grid-template-columns:1fr !important;
+  }
+
+  #detailActions > div:last-child{
+    justify-content:stretch !important;
+  }
+
+  #saveDetail{width:100%}
+
+  .petugas-master-tools,
+  .petugas-tools{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .petugas-master-tools .left{
+    width:100%;
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .petugas-master-tools input,
+  .petugas-master-tools select,
+  .petugas-master-tools button{
+    width:100%;
+    max-width:none;
+    min-width:0;
+  }
+
+  .petugas-panel{
+    width:100%;
+    overflow-x:auto !important;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .petugas-master-table{min-width:850px}
+  .petugas-table{min-width:760px}
+
+  .petugas-grid{grid-template-columns:1fr}
+  .petugas-field.full{grid-column:auto}
+
+  .petugas-modal{padding:10px}
+  .petugas-modal-box{max-height:94vh;overflow:auto}
+
+  #settingsPanel .settings-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  #settingsPanel .settings-grid .setting-card:nth-child(4){
+    grid-column:span 1;
+  }
+
+  .settings-actions{
+    flex-direction:column;
+  }
+
+  .settings-actions .settings-btn{
+    width:100%;
+  }
+
+  #geparuAdminLoginCard{
+    width:min(420px,100%);
+    padding:22px;
+  }
+}
+
+/* HP sangat kecil */
+@media (max-width: 480px){
+  .main{padding:10px}
+  .sidebar{padding:10px 9px 12px}
+  .brand-logo{width:50px;height:50px;flex-basis:50px}
+  .brand strong{font-size:15px}
+  .nav button{padding:9px 10px;font-size:11px}
+
+  .cards{grid-template-columns:1fr 1fr;gap:8px}
+  .card{padding:11px}
+  .card .label{font-size:10px}
+  .card .num{font-size:21px}
+
   .controls{grid-template-columns:1fr}
   .controls input{grid-column:auto}
-  .top h1{font-size:22px}
-  .brand-logo{width:105px;height:105px}
+
+  .panel{padding:11px}
+  .top h1{font-size:21px}
+
+  #geparuAdminLoginCard{padding:19px}
+  #geparuAdminLoginCard h2{font-size:20px}
 }
 
-/* Tombol menu HP */
-.mobile-menu{
-  display:none;position:fixed;top:12px;left:12px;width:40px;height:40px;
-  border:1px solid #d7dee8;background:#fff;color:#173b63;border-radius:9px;
-  align-items:center;justify-content:center;font-size:20px;cursor:pointer;
-  box-shadow:0 4px 14px rgba(15,35,60,.12);z-index:1100;
-}
-.mobile-overlay{
-  position:fixed;inset:0;background:rgba(5,18,34,.42);z-index:900;
-}
+<style id="geparu-admin-login-style">
+#geparuAdminLoginOverlay{position:fixed;inset:0;background:rgba(15,35,55,.72);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px;box-sizing:border-box}
+#geparuAdminLoginCard{width:min(420px,100%);background:#fff;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.25);padding:28px;box-sizing:border-box}
+#geparuAdminLoginCard h2{margin:0 0 6px;color:#12324a;font-size:22px}
+#geparuAdminLoginCard .login-sub{margin:0 0 18px;color:#718096;font-size:13px;line-height:1.5}
+#geparuAdminLoginCard label{display:block;font-size:12px;font-weight:700;color:#4a5568;margin:0 0 6px}
+#geparuAdminLoginCard input{width:100%;box-sizing:border-box;padding:12px 13px;border:1px solid #d9e2ec;border-radius:9px;margin-bottom:14px;font:inherit;outline:none}
+#geparuAdminLoginCard input:focus{border-color:#2f80ed;box-shadow:0 0 0 3px rgba(47,128,237,.10)}
+#geparuAdminLoginBtn{width:100%;border:0;border-radius:9px;padding:12px 14px;background:#123b5d;color:#fff;font-weight:700;cursor:pointer}
+#geparuAdminLoginBtn:disabled{opacity:.65;cursor:wait}
+#geparuAdminForgotBtn{display:block;width:100%;border:0;background:transparent;color:#245b87;padding:9px 8px 2px;font-size:12px;font-weight:700;cursor:pointer}
+#geparuAdminRecoveryWrap{margin-top:12px;padding-top:12px;border-top:1px solid #e8edf2}
+.geparu-admin-recovery-title{font-size:14px;font-weight:700;color:#12324a;margin-bottom:4px}
+.geparu-admin-recovery-sub{font-size:11px;line-height:1.45;color:#718096;margin-bottom:10px}
+#geparuAdminRecoverySubmit{width:100%;border:0;border-radius:9px;padding:11px 12px;background:#123b5d;color:#fff;font-weight:700;cursor:pointer}
+#geparuAdminRecoverySubmit:disabled{opacity:.65;cursor:wait}
+#geparuAdminRecoveryBack{display:block;width:100%;border:0;background:transparent;color:#5c6b7a;padding:9px 8px 0;font-size:12px;font-weight:700;cursor:pointer}
+#geparuAdminLoginMsg{min-height:18px;margin-top:12px;font-size:12px;text-align:center}
+.geparu-google-btn{width:100%;margin-top:9px;border:1px solid #d9e2ec;background:#fff;border-radius:8px;padding:10px 12px;font-size:12px;font-weight:700;cursor:pointer;color:#243b53;display:flex;align-items:center;justify-content:center;gap:8px}
+.geparu-google-btn:hover{background:#f7fafc}
+.geparu-google-btn:disabled{opacity:.65;cursor:wait}
+.geparu-google-icon{font-size:15px;font-weight:800;color:#4285f4}
+#geparuAdminAuthTabs{display:grid;grid-template-columns:1fr 1fr;background:#eef3f7;border-radius:9px;padding:3px;margin-bottom:18px}
+#geparuAdminAuthTabs button{border:0;background:transparent;border-radius:7px;padding:9px 8px;color:#5c6b7a;font-weight:700;font-size:12px;cursor:pointer}
+#geparuAdminAuthTabs button.active{background:#fff;color:#123b5d;box-shadow:0 2px 7px rgba(15,35,55,.10)}
+#geparuAdminSignupHint{font-size:11px;color:#718096;margin:-5px 0 14px;line-height:1.45}
+#geparuAdminUserBar{display:none!important}
+#geparuAdminUserEmail{display:none!important}
+.sidebar-logout-btn{display:none;width:100%;margin-top:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#fff;border-radius:8px;padding:10px 12px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;box-sizing:border-box}
+.sidebar-logout-btn:hover{background:rgba(255,255,255,.14)}
+.sidebar-logout-btn:active{transform:translateY(1px)}
 </style>
 </head>
 <body>
-<button class="mobile-menu" id="mobileMenu" aria-label="Buka menu">☰</button>
-<div class="mobile-overlay" id="mobileOverlay"></div>
+<div id="geparuAdminLoginOverlay" aria-modal="true" role="dialog">
+  <div id="geparuAdminLoginCard">
+    <h2 id="geparuAdminAuthTitle">Login Admin GEPARU</h2>
+    <p class="login-sub" id="geparuAdminAuthSub">Dashboard ini khusus untuk admin/client GEPARU. Gunakan akun Gmail yang sudah terdaftar.</p>
+    <div id="geparuAdminAuthTabs">
+      <button id="geparuAdminSignInTab" type="button" class="active">Sign In</button>
+      <button id="geparuAdminSignUpTab" type="button">Sign Up</button>
+    </div>
+    <form id="geparuAdminLoginForm" autocomplete="on">
+      <label for="geparuAdminEmail">Gmail Admin</label>
+      <input id="geparuAdminEmail" type="email" autocomplete="username" required placeholder="nama@gmail.com">
+      <div id="geparuAdminConfirmWrap" style="display:none">
+        <label for="geparuAdminPassword">Password</label>
+        <input id="geparuAdminPassword" type="password" autocomplete="new-password" placeholder="Buat password">
+        <label for="geparuAdminPasswordConfirm">Konfirmasi Password</label>
+        <input id="geparuAdminPasswordConfirm" type="password" autocomplete="new-password" placeholder="Ulangi password">
+        <div id="geparuAdminSignupHint">Gunakan alamat Gmail milik admin sendiri. Akun dibuat melalui Supabase Authentication.</div>
+      </div>
+      <div id="geparuAdminSigninPasswordWrap">
+        <label for="geparuAdminPasswordSignin">Password</label>
+        <input id="geparuAdminPasswordSignin" type="password" autocomplete="current-password" placeholder="Masukkan password">
+      </div>
+      <button id="geparuAdminLoginBtn" type="submit">Masuk ke Dashboard</button>
+      <button id="geparuAdminGoogleBtn" type="button" class="geparu-google-btn">
+        <span class="geparu-google-icon">G</span> Masuk dengan Google
+      </button>
+      <button id="geparuAdminForgotBtn" type="button">Lupa Password?</button>
+
+      <div id="geparuAdminRecoveryWrap" style="display:none">
+        <div class="geparu-admin-recovery-title">Reset Password Admin</div>
+        <div class="geparu-admin-recovery-sub">
+          Masukkan Gmail admin yang terdaftar. Supabase akan mengirim email untuk membuat password baru.
+        </div>
+        <button id="geparuAdminRecoverySubmit" type="button">Kirim Email Reset Password</button>
+        <button id="geparuAdminRecoveryBack" type="button">Kembali ke Sign In</button>
+      </div>
+
+      <div id="geparuAdminLoginMsg" role="alert"></div>
+    </form>
+  </div>
+</div>
 <div class="app">
 <aside class="sidebar">
   <div class="brand">
@@ -163,11 +499,13 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
     <span>ADUAN SOSIAL</span>
   </div>
   <nav class="nav">
-    <button class="active">▦ &nbsp; Overview</button>
-    <button>▤ &nbsp; Data Aduan</button>
-    <button>◉ &nbsp; Petugas</button>
-    <button>⚙ &nbsp; Pengaturan GEPARU</button>
+    <button type="button" class="active" id="navOverview">▦ &nbsp; Overview</button>
+    <button type="button" id="navDataAduan">▤ &nbsp; Data Aduan</button>
+    <button type="button" id="navPetugas">◉ &nbsp; Petugas</button>
+    <button type="button" id="navPengaturan">⚙ &nbsp; Pengaturan GEPARU</button>
   </nav>
+  <button id="geparuAdminLogoutBtn" class="sidebar-logout-btn" type="button">↪ &nbsp; Keluar</button>
+
   <div class="sidebar-bottom">
     <b>GEPARU</b>
     <span>Generasi Padjajaran Baru</span>
@@ -178,25 +516,35 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
   <header class="top">
     <div>
       <h1>Dashboard GEPARU</h1>
-      <div class="breadcrumb">PT.Adiimasa Distribusi Indonesia &nbsp;›&nbsp; Modul Sosial &nbsp;›&nbsp; <b>GEPARU</b></div>
+      <div class="breadcrumb">PT.Adiimasa Distribusi Indonesia&nbsp;›&nbsp; Modul Sosial &nbsp;›&nbsp; <b>GEPARU</b></div>
     </div>
     <div class="client">CLIENT AKTIF<b>GEPARU — Generasi Padjajaran Baru</b></div>
   </header>
 
-  <section class="cards">
-    <div class="card total"><div class="label">Total Aduan</div><div class="num" id="total">-</div></div>
-    <div class="card accept"><div class="label">Diterima</div><div class="num" id="diterima">-</div></div>
-    <div class="card process"><div class="label">Diverifikasi</div><div class="num" id="diverifikasi">-</div></div>
-    <div class="card process"><div class="label">Ditindaklanjuti</div><div class="num" id="ditindaklanjuti">-</div></div>
-    <div class="card done"><div class="label">Selesai</div><div class="num" id="selesai">-</div></div>
-    <div class="card reject"><div class="label">Ditolak</div><div class="num" id="ditolak">-</div></div>
+  <section class="cards" id="overviewCards">
+    <div class="card total"><div class="label">Total Aduan</div><div class="num" id="total">0</div></div>
+    <div class="card accept"><div class="label">Diterima</div><div class="num" id="diterima">0</div></div>
+    <div class="card process"><div class="label">Diverifikasi</div><div class="num" id="diverifikasi">0</div></div>
+    <div class="card process"><div class="label">Ditindaklanjuti</div><div class="num" id="ditindaklanjuti">0</div></div>
+    <div class="card done"><div class="label">Selesai</div><div class="num" id="selesai">0</div></div>
+    <div class="card reject"><div class="label">Ditolak</div><div class="num" id="ditolak">0</div></div>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="petugasPanel" style="display:none">
+    <div class="panel-head"><h2>Petugas GEPARU</h2><button class="primary" id="refreshPetugas">↻ Refresh</button></div>
+    <div class="petugas-master-tools"><div class="left"><input id="petugasMasterSearch" placeholder="Cari nama / WhatsApp / jabatan..."><select id="petugasMasterStatus"><option value="SEMUA">Semua Status</option><option value="AKTIF">Aktif</option><option value="NONAKTIF">Nonaktif</option></select></div><button class="primary" id="btnTambahPetugas">+ Tambah Petugas</button></div>
+    <div class="petugas-notice">Kelola daftar petugas GEPARU di sini. Struktur ini disiapkan untuk tabel <b>public.petugas_geparu</b>. Data master petugas terhubung ke Supabase pada tabel <b>public.petugas_geparu</b>.</div>
+    <div class="petugas-panel" style="overflow:auto;margin-top:15px"><table class="petugas-master-table"><thead><tr><th>No.</th><th>Nama Petugas</th><th>WhatsApp</th><th>Jabatan</th><th>Username</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="petugasMasterBody"></tbody></table></div>
+    <div id="petugasMasterSummary" style="margin-top:14px;color:#6b819b;font-size:12px"></div>
+    <div class="panel-head" style="margin-top:24px;padding-top:18px;border-top:1px solid #edf1f5"><h2 style="font-size:15px">Ringkasan Penanganan Aduan</h2></div>
+    <div class="petugas-panel" style="overflow:auto"><table class="petugas-table"><thead><tr><th>Petugas</th><th>Total Aduan</th><th>Diterima</th><th>Diverifikasi</th><th>Ditindaklanjuti</th><th>Selesai</th><th>Ditolak</th><th>Aksi</th></tr></thead><tbody id="petugasTbody"></tbody></table></div>
+  </section>
+
+  <section class="panel" id="dataAduanPanel">
     <div class="panel-head">
-      <h2>Data Aduan GEPARU</h2>
+      <h2 id="panelTitle">Data Aduan GEPARU</h2>
       <div class="controls">
-        <input id="search" placeholder="Cari nomor / nama / judul...">
+        <input id="search" placeholder="Cari nomor / nama / judul / petugas...">
         <select id="statusFilter">
           <option value="">Semua Status</option>
           <option value="DITERIMA">DITERIMA</option>
@@ -204,6 +552,13 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
           <option value="DITINDAKLANJUTI">DITINDAKLANJUTI</option>
           <option value="SELESAI">SELESAI</option>
           <option value="DITOLAK">DITOLAK</option>
+        </select>
+        <select id="dateFilter">
+          <option value="">Semua Tanggal</option>
+          <option value="today">Hari Ini</option>
+          <option value="7">7 Hari Terakhir</option>
+          <option value="30">30 Hari Terakhir</option>
+          <option value="month">Bulan Ini</option>
         </select>
         <select id="sort">
           <option value="tanggal_desc">Terbaru</option>
@@ -239,9 +594,75 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
     </div>
   </section>
 
-  <div class="footer">Copyright © 2026 Reserved by PT.Adiimasa Distribusi Indonesia &nbsp;•&nbsp; Modul Sosial &nbsp;•&nbsp; Client GEPARU</div>
+  <div class="footer">Copyright © 2026 Reserved by PT Adiimasa Distribusi Indonesia &nbsp;•&nbsp; Modul Sosial &nbsp;•&nbsp; Client GEPARU</div>
 </main>
 </div>
+
+
+<section class="settings-panel" id="settingsPanel" style="display:none">
+  <div class="panel">
+    <div class="panel-head"><div><h2>Pengaturan GEPARU</h2><div class="sub">Konfigurasi Client Modul Sosial GEPARU</div></div></div>
+    <div style="padding:18px">
+      <div class="settings-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+        <div class="setting-card">
+          <div class="setting-title">Profil Client</div>
+          <div class="setting-desc">Identitas GEPARU yang dapat disiapkan sekarang dan disambungkan ke Supabase pada tahap berikutnya.</div>
+          <label class="setting-label">Nama Client</label><input class="settings-input" id="setClientName" value="GEPARU">
+          <label class="setting-label">Nama Organisasi</label><input class="settings-input" id="setOrgName" value="Generasi Padjajaran Baru">
+          <label class="setting-label">Deskripsi</label><textarea class="settings-input" id="setDescription" rows="3">Client Modul Sosial di bawah naungan PT Adiimasa Distribusi Indonesia.</textarea>
+          <label class="setting-label">WhatsApp / Kontak</label><input class="settings-input" id="setContact" placeholder="Belum diisi">
+          <div class="settings-note">Data pengaturan disimpan ke Supabase setelah tombol Simpan Pengaturan ditekan.</div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-title">Identitas Platform</div>
+          <div class="setting-desc">Identitas inti platform tetap mengikuti struktur utama.</div>
+          <label class="setting-label">Naungan</label><input class="settings-input" value="PT Adiimasa Distribusi Indonesia" readonly>
+          <label class="setting-label">Modul</label><input class="settings-input" value="Sosial" readonly>
+          <label class="setting-label">Client</label><input class="settings-input" value="GEPARU" readonly>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-title">Layanan Aduan</div>
+          <div class="setting-desc">Status yang digunakan oleh layanan aduan sosial.</div>
+          <div class="status-list"><span>✓ DITERIMA</span><span>✓ DIVERIFIKASI</span><span>✓ DITINDAKLANJUTI</span><span>✓ SELESAI</span><span>✓ DITOLAK</span></div>
+          <div class="settings-note">Pengubahan status aduan tetap dilakukan melalui Detail Aduan.</div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-title">Notifikasi</div>
+          <div class="setting-desc">Pilihan notifikasi disiapkan terlebih dahulu.</div>
+          <label class="setting-check"><input type="checkbox" id="setNotifWA"><span><b>WhatsApp</b><small>Notifikasi perubahan status aduan</small></span></label>
+          <label class="setting-check"><input type="checkbox" id="setNotifEmail"><span><b>Email</b><small>Notifikasi administrasi</small></span></label>
+          <label class="setting-check"><input type="checkbox" id="setNotifStatus"><span><b>Notifikasi Status</b><small>Pemberitahuan ketika status aduan berubah</small></span></label>
+          <div class="settings-note">Layanan pengiriman belum disambungkan.</div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-title">Keamanan & Akses</div>
+          <div class="setting-desc">Kerangka hak akses dashboard.</div>
+          <div class="access-box"><b>Admin Client</b><small>Mengelola aduan dan konfigurasi GEPARU.</small></div>
+          <div class="access-box"><b>Petugas</b><small>Menangani aduan yang ditugaskan.</small></div>
+          <div class="settings-note">Role Supabase akan dibuat setelah struktur autentikasi ditetapkan.</div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-title">Informasi Sistem</div>
+          <div class="setting-desc">Informasi dasar modul.</div>
+          <div class="system-row"><span>Platform</span><b>PT Adiimasa Distribusi Indonesia</b></div>
+          <div class="system-row"><span>Modul</span><b>Sosial</b></div>
+          <div class="system-row"><span>Client</span><b>GEPARU</b></div>
+          <div class="system-row"><span>Tahun</span><b>2026</b></div>
+          <div class="copyright-settings">© 2026 Reserved by PT Adiimasa Distribusi Indonesia</div>
+        </div>
+      </div>
+      <div class="settings-actions"><button class="settings-btn" id="btnResetSettings" type="button">Reset</button><button class="settings-btn primary" id="btnSaveSettings" type="button">Simpan Pengaturan</button></div>
+      <div id="settingsSaveMessage" class="settings-note settings-message"></div>
+    </div>
+  </div>
+</section>
+
+<div class="petugas-modal" id="petugasMasterModal"><div class="petugas-modal-box"><div class="petugas-modal-head"><h3 id="petugasMasterModalTitle">Tambah Petugas</h3><button class="petugas-close" type="button" id="petugasMasterClose">×</button></div><form class="petugas-form" id="petugasMasterForm"><input type="hidden" id="petugasMasterEditId"><div class="petugas-grid"><div class="petugas-field full"><label>Nama Petugas *</label><input id="pmNama" required placeholder="Nama lengkap petugas"></div><div class="petugas-field"><label>WhatsApp</label><input id="pmWhatsapp" placeholder="628xxxxxxxxxx"></div><div class="petugas-field"><label>Jabatan</label><input id="pmJabatan" placeholder="Contoh: Petugas Lapangan"></div><div class="petugas-field"><label>Username</label><input id="pmUsername" placeholder="Username petugas"></div><div class="petugas-field"><label>Status</label><select id="pmStatus"><option value="AKTIF">Aktif</option><option value="NONAKTIF">Nonaktif</option></select></div><div class="petugas-field full"><label>Catatan</label><textarea id="pmCatatan" rows="3" placeholder="Catatan tambahan"></textarea></div></div><div class="petugas-notice">Client: <b>GEPARU</b> — data akan disimpan pada <b>public.petugas_geparu</b>.</div><div class="petugas-modal-foot" style="margin:20px -20px -20px"><button type="button" class="settings-btn" id="petugasMasterCancel">Batal</button><button type="submit" class="settings-btn primary">Simpan Petugas</button></div></form></div></div>
 
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
@@ -250,6 +671,34 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
       <button class="close" id="closeModal">×</button>
     </div>
     <div class="detail-grid" id="detailContent"></div>
+<div id="detailActions" style="margin-top:18px;padding-top:16px;border-top:1px solid #e8edf3;display:none">
+  <div style="font-weight:700;color:#263447;margin-bottom:12px">Kelola Aduan</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div>
+      <label style="display:block;font-size:11px;color:#718096;margin-bottom:5px">Status</label>
+      <select id="detailStatus" style="width:100%;padding:10px;border:1px solid #d9e2ec;border-radius:8px;background:#fff">
+        <option value="DITERIMA">DITERIMA</option>
+        <option value="DIVERIFIKASI">DIVERIFIKASI</option>
+        <option value="DITINDAKLANJUTI">DITINDAKLANJUTI</option>
+        <option value="SELESAI">SELESAI</option>
+        <option value="DITOLAK">DITOLAK</option>
+      </select>
+    </div>
+    <div>
+      <label style="display:block;font-size:11px;color:#718096;margin-bottom:5px">Petugas</label>
+      <select id="detailPetugas" style="width:100%;padding:10px;border:1px solid #d9e2ec;border-radius:8px;background:#fff;box-sizing:border-box"><option value="">Pilih petugas...</option></select>
+    </div>
+  </div>
+  <div style="margin-top:12px">
+    <label style="display:block;font-size:11px;color:#718096;margin-bottom:5px">Catatan</label>
+    <textarea id="detailCatatan" rows="4" placeholder="Catatan penanganan aduan..." style="width:100%;padding:10px;border:1px solid #d9e2ec;border-radius:8px;box-sizing:border-box;resize:vertical"></textarea>
+  </div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+    <button id="saveDetail" class="primary" type="button">Simpan Perubahan</button>
+  </div>
+  <div id="saveDetailMsg" style="font-size:11px;margin-top:8px;text-align:right"></div>
+</div>
+
   </div>
 </div>
 
@@ -257,6 +706,502 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
 const SUPABASE_URL = "https://fysaxpqpqexjnlpkbwap.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_DWRaEZTcNMjhglwN3nqCOw_pua8rsjD";
 const ADUAN_URL = SUPABASE_URL + "/rest/v1/aduan";
+
+// ======================================================
+// LOGIN ADMIN GEPARU — AUTH SUPABASE
+// Hanya menambahkan lapisan login; struktur dashboard lainnya tetap.
+// ======================================================
+let currentAccessToken = sessionStorage.getItem("geparu_admin_access_token") || "";
+let currentRefreshToken = sessionStorage.getItem("geparu_admin_refresh_token") || "";
+let currentAdminEmail = sessionStorage.getItem("geparu_admin_email") || "";
+let dashboardStarted = false;
+
+function authHeaders(extra={}){
+  // DATA GEPARU tetap menggunakan akses database yang sama seperti
+  // dashboard baseline yang sudah terbukti membaca 8 aduan.
+  // Login Google hanya menjadi lapisan autentikasi dashboard,
+  // bukan mengganti Authorization database dengan token user.
+  return Object.assign({
+    "apikey": SUPABASE_PUBLISHABLE_KEY,
+    "Authorization": "Bearer " + SUPABASE_PUBLISHABLE_KEY,
+    "Accept": "application/json"
+  }, extra);
+}
+
+function showAdminLogin(message="", isError=true){
+  const overlay=document.getElementById("geparuAdminLoginOverlay");
+  if(overlay) overlay.style.display="flex";
+  const bar=document.getElementById("geparuAdminUserBar");
+  if(bar) bar.style.display="none";
+  const msg=document.getElementById("geparuAdminLoginMsg");
+  if(msg){msg.textContent=message;msg.style.color=isError?"#b42318":"#16794a";}
+}
+
+function showAdminDashboard(){
+  const overlay=document.getElementById("geparuAdminLoginOverlay");
+  if(overlay) overlay.style.display="none";
+  const bar=document.getElementById("geparuAdminUserBar");
+  const email=document.getElementById("geparuAdminUserEmail");
+  const logoutBtn=document.getElementById("geparuAdminLogoutBtn");
+  if(email) email.textContent=currentAdminEmail || "Admin GEPARU";
+  if(bar) bar.style.display="none";
+  if(logoutBtn) logoutBtn.style.display="block";
+}
+
+function clearAdminSession(){
+  currentAccessToken="";
+  currentRefreshToken="";
+  currentAdminEmail="";
+  sessionStorage.removeItem("geparu_admin_access_token");
+  sessionStorage.removeItem("geparu_admin_refresh_token");
+  sessionStorage.removeItem("geparu_admin_email");
+  const logoutBtn=document.getElementById("geparuAdminLogoutBtn");
+  if(logoutBtn) logoutBtn.style.display="none";
+}
+
+async function verifyAdminSession(){
+  if(!currentAccessToken) return false;
+  try{
+    const res=await fetch(SUPABASE_URL+"/auth/v1/user",{
+      method:"GET",
+      headers:{
+        "apikey":SUPABASE_PUBLISHABLE_KEY,
+        "Authorization":"Bearer "+currentAccessToken,
+        "Accept":"application/json"
+      },
+      cache:"no-store"
+    });
+    if(!res.ok) return false;
+    const user=await res.json().catch(()=>null);
+    if(!user || !user.id || !user.email) return false;
+    currentAdminEmail=user.email;
+    sessionStorage.setItem("geparu_admin_email",currentAdminEmail);
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+
+async function getCoreAdiimasaApproval(){
+  if(!currentAccessToken || !currentAdminEmail) return {status:"PENDING", exists:false};
+  const url=SUPABASE_URL+"/rest/v1/geparu_admin_access?select=*&email=eq."+encodeURIComponent(currentAdminEmail)+"&limit=1";
+  const res=await fetch(url,{headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+currentAccessToken,"Accept":"application/json"},cache:"no-store"});
+  if(!res.ok){
+    const detail=await res.text().catch(()=>"");
+    throw new Error("Gagal memeriksa persetujuan Core Adiimasa (HTTP "+res.status+"). "+(detail||"Supabase menolak permintaan."));
+  }
+  const data=await res.json().catch(()=>[]);
+  if(!Array.isArray(data)||!data.length) return {status:"PENDING",exists:false};
+  const row=data[0];
+  return {status:String(row.approval_status||"PENDING").toUpperCase(),exists:true,row};
+}
+
+async function registerPendingCoreAccess(){
+  const email=String(currentAdminEmail||"").trim().toLowerCase();
+  if(!email) return;
+  const check=await getCoreAdiimasaApproval();
+  if(check.exists) return check;
+  const res=await fetch(SUPABASE_URL+"/rest/v1/geparu_admin_access",{
+    method:"POST",
+    headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+currentAccessToken,"Content-Type":"application/json","Accept":"application/json","Prefer":"return=representation"},
+    body:JSON.stringify({email,client_code:"GEPARU",client_name:"GEPARU",role:"admin",is_active:false,approval_status:"PENDING",core_name:"PT Adiimasa Distribusi Indonesia",module_slug:"sosial"})
+  });
+  if(res.ok){
+    const data=await res.json().catch(()=>[]);
+    return {status:"PENDING",exists:true,row:Array.isArray(data)?data[0]:null};
+  }
+  const retry=await getCoreAdiimasaApproval();
+  if(retry.exists) return retry;
+  throw new Error("Akun berhasil login, tetapi gagal membuat permintaan akses ke Core Adiimasa.");
+}
+
+async function checkCoreAdiimasaApproval(){
+  const current=await getCoreAdiimasaApproval();
+  if(current.exists) return current;
+  return await registerPendingCoreAccess();
+}
+
+function showCoreApprovalGate(status="PENDING",note=""){
+  const msg=document.getElementById("geparuAdminLoginMsg");
+  const s=String(status||"PENDING").toUpperCase();
+  let text="";
+  if(s==="APPROVED") return false;
+  if(s==="REJECTED") text="Akses ditolak oleh Core Adiimasa. "+(note?"\n\nCatatan: "+note:"");
+  else if(s==="SUSPENDED") text="Akses akun ini sedang ditangguhkan oleh Core Adiimasa.";
+  else text="✓ Login Gmail berhasil.\n\nAkses Dashboard GEPARU masih menunggu persetujuan Core Adiimasa — PT Adiimasa Distribusi Indonesia.\n\nModul: SOSIAL\nClient: GEPARU";
+  showAdminLogin(text,false);
+  if(msg){msg.style.whiteSpace="pre-line";msg.style.color=s==="REJECTED"||s==="SUSPENDED"?"#b42318":"#8a5a00";}
+  return true;
+}
+
+async function requestAdminPasswordReset(email){
+  if(!isGmailAddress(email)) throw new Error("Reset password harus menggunakan alamat Gmail (@gmail.com).");
+
+  const body={email};
+  // Jika dashboard sedang dijalankan dari alamat web, kembalikan admin ke
+  // halaman yang sama setelah proses reset. Untuk file://, Supabase memakai
+  // Site URL yang sudah dikonfigurasi di project.
+  if(/^https?:$/i.test(location.protocol)){
+    body.redirect_to=location.href.split("#")[0];
+  }
+
+  const res=await fetch(SUPABASE_URL+"/auth/v1/recover",{
+    method:"POST",
+    headers:{
+      "apikey":SUPABASE_PUBLISHABLE_KEY,
+      "Content-Type":"application/json",
+      "Accept":"application/json"
+    },
+    body:JSON.stringify(body)
+  });
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok){
+    throw new Error(data.msg || data.error_description || data.error || "Gagal mengirim email reset password.");
+  }
+}
+
+function showAdminRecovery(show=true){
+  const recovery=document.getElementById("geparuAdminRecoveryWrap");
+  const forgot=document.getElementById("geparuAdminForgotBtn");
+  const signInTab=document.getElementById("geparuAdminSignInTab");
+  const signUpTab=document.getElementById("geparuAdminSignUpTab");
+  const formFields=document.getElementById("geparuAdminSigninPasswordWrap");
+  const btn=document.getElementById("geparuAdminLoginBtn");
+  if(recovery) recovery.style.display=show ? "block" : "none";
+  if(forgot) forgot.style.display=show ? "none" : (adminAuthMode==="signin" ? "block" : "none");
+  if(formFields) formFields.style.display=show ? "none" : (adminAuthMode==="signin" ? "block" : "none");
+  if(btn) btn.style.display=show ? "none" : "block";
+  if(signInTab) signInTab.style.display=show ? "none" : "block";
+  if(signUpTab) signUpTab.style.display=show ? "none" : "block";
+}
+
+async function loginAdminGEPARU(email,password){
+  const res=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=password",{
+    method:"POST",
+    headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify({email,password})
+  });
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok || !data.access_token) throw new Error(data.error_description || data.msg || data.error || "Email atau password tidak benar.");
+  currentAccessToken=data.access_token;
+  currentRefreshToken=data.refresh_token || "";
+  currentAdminEmail=(data.user && data.user.email) || email;
+  sessionStorage.setItem("geparu_admin_access_token",currentAccessToken);
+  sessionStorage.setItem("geparu_admin_refresh_token",currentRefreshToken);
+  sessionStorage.setItem("geparu_admin_email",currentAdminEmail);
+}
+
+async function refreshAdminSession(){
+  if(!currentRefreshToken) return false;
+  const res=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=refresh_token",{
+    method:"POST",
+    headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify({refresh_token:currentRefreshToken})
+  });
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok || !data.access_token) return false;
+  currentAccessToken=data.access_token;
+  currentRefreshToken=data.refresh_token || currentRefreshToken;
+  currentAdminEmail=(data.user && data.user.email) || currentAdminEmail;
+  sessionStorage.setItem("geparu_admin_access_token",currentAccessToken);
+  sessionStorage.setItem("geparu_admin_refresh_token",currentRefreshToken);
+  sessionStorage.setItem("geparu_admin_email",currentAdminEmail);
+  return true;
+}
+
+async function logoutAdminGEPARU(){
+  try{
+    if(currentAccessToken){
+      await fetch(SUPABASE_URL+"/auth/v1/logout",{method:"POST",headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+currentAccessToken}});
+    }
+  }catch(e){}
+  clearAdminSession();
+  location.reload();
+}
+
+function isGmailAddress(email){
+  return /^[^\s@]+@gmail\.com$/i.test(String(email||'').trim());
+}
+
+let adminAuthMode = "signin";
+
+function setAdminAuthMode(mode){
+  adminAuthMode = mode === "signup" ? "signup" : "signin";
+  const signInTab=document.getElementById("geparuAdminSignInTab");
+  const signUpTab=document.getElementById("geparuAdminSignUpTab");
+  const title=document.getElementById("geparuAdminAuthTitle");
+  const sub=document.getElementById("geparuAdminAuthSub");
+  const confirmWrap=document.getElementById("geparuAdminConfirmWrap");
+  const signInWrap=document.getElementById("geparuAdminSigninPasswordWrap");
+  const passwordSignin=document.getElementById("geparuAdminPasswordSignin");
+  const password=document.getElementById("geparuAdminPassword");
+  const passwordConfirm=document.getElementById("geparuAdminPasswordConfirm");
+  const btn=document.getElementById("geparuAdminLoginBtn");
+  const msg=document.getElementById("geparuAdminLoginMsg");
+  if(signInTab) signInTab.classList.toggle("active",adminAuthMode==="signin");
+  if(signUpTab) signUpTab.classList.toggle("active",adminAuthMode==="signup");
+  if(title) title.textContent=adminAuthMode==="signup" ? "Daftar Admin GEPARU" : "Login Admin GEPARU";
+  if(sub) sub.textContent=adminAuthMode==="signup" ? "Buat akun admin terlebih dahulu menggunakan Gmail milik masing-masing admin." : "Dashboard ini khusus untuk admin/client GEPARU. Gunakan akun Gmail yang sudah terdaftar.";
+  if(confirmWrap) confirmWrap.style.display=adminAuthMode==="signup" ? "block" : "none";
+  if(signInWrap) signInWrap.style.display=adminAuthMode==="signin" ? "block" : "none";
+  if(passwordSignin) passwordSignin.required=adminAuthMode==="signin";
+  if(password) password.required=adminAuthMode==="signup";
+  if(passwordConfirm) passwordConfirm.required=adminAuthMode==="signup";
+  if(btn) btn.textContent=adminAuthMode==="signup" ? "Daftar Akun Admin" : "Masuk ke Dashboard";
+  const googleBtn=document.getElementById("geparuAdminGoogleBtn");
+  if(googleBtn) googleBtn.style.display=adminAuthMode==="signup" ? "none" : "flex";
+  if(msg) msg.textContent="";
+  showAdminRecovery(false);
+}
+
+async function signUpAdminGEPARU(email,password,passwordConfirm){
+  if(!isGmailAddress(email)) throw new Error("Pendaftaran admin harus menggunakan alamat Gmail (@gmail.com).");
+  if(String(password||'').length < 6) throw new Error("Password minimal 6 karakter.");
+  if(password !== passwordConfirm) throw new Error("Konfirmasi password tidak sama.");
+
+  const res=await fetch(SUPABASE_URL+"/auth/v1/signup",{
+    method:"POST",
+    headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify({email,password})
+  });
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.msg || data.error_description || data.error || "Pendaftaran gagal.");
+
+  // Jika Supabase meminta konfirmasi email, belum ada session dan admin harus
+  // mengonfirmasi Gmail terlebih dahulu. Jika konfirmasi email dimatikan,
+  // Supabase dapat langsung mengembalikan session.
+  if(data.access_token){
+    currentAccessToken=data.access_token;
+    currentRefreshToken=data.refresh_token || "";
+    currentAdminEmail=(data.user && data.user.email) || email;
+    sessionStorage.setItem("geparu_admin_access_token",currentAccessToken);
+    sessionStorage.setItem("geparu_admin_refresh_token",currentRefreshToken);
+    sessionStorage.setItem("geparu_admin_email",currentAdminEmail);
+    return {loggedIn:true};
+  }
+  return {loggedIn:false};
+}
+
+async function loginAdminGEPARU(email,password){
+  if(!isGmailAddress(email)) throw new Error("Login admin harus menggunakan alamat Gmail (@gmail.com).");
+  const res=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=password",{
+    method:"POST",
+    headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify({email,password})
+  });
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok || !data.access_token) throw new Error(data.error_description || data.msg || data.error || "Email atau password tidak benar.");
+  currentAccessToken=data.access_token;
+  currentRefreshToken=data.refresh_token || "";
+  currentAdminEmail=(data.user && data.user.email) || email;
+  sessionStorage.setItem("geparu_admin_access_token",currentAccessToken);
+  sessionStorage.setItem("geparu_admin_refresh_token",currentRefreshToken);
+  sessionStorage.setItem("geparu_admin_email",currentAdminEmail);
+}
+
+function loginWithGoogleGEPARU(){
+  const redirectTo = location.href.split("#")[0];
+  const url =
+    SUPABASE_URL +
+    "/auth/v1/authorize?provider=google&redirect_to=" +
+    encodeURIComponent(redirectTo);
+  location.href = url;
+}
+
+async function handleGoogleOAuthCallback(){
+  const hash = window.location.hash || "";
+  if(!hash || !hash.includes("access_token=")) return false;
+
+  const params = new URLSearchParams(hash.substring(1));
+  const accessToken = params.get("access_token") || "";
+  const refreshToken = params.get("refresh_token") || "";
+
+  if(!accessToken) return false;
+
+  currentAccessToken = accessToken;
+  currentRefreshToken = refreshToken;
+
+  sessionStorage.setItem("geparu_admin_access_token", currentAccessToken);
+  sessionStorage.setItem("geparu_admin_refresh_token", currentRefreshToken);
+
+  // Ambil data user dari Supabase untuk mendapatkan email akun Google.
+  const ok = await verifyAdminSession();
+  if(!ok){
+    clearAdminSession();
+    return false;
+  }
+
+  // Bersihkan token dari address bar setelah berhasil diproses.
+  history.replaceState(null, document.title, location.pathname + location.search);
+
+  history.replaceState(null, document.title, location.pathname + location.search);
+  await openDashboardIfApproved();
+  return true;
+}
+
+function setupAdminLoginUI(){
+  const form=document.getElementById("geparuAdminLoginForm");
+  const btn=document.getElementById("geparuAdminLoginBtn");
+  const googleBtn=document.getElementById("geparuAdminGoogleBtn");
+  const logout=document.getElementById("geparuAdminLogoutBtn");
+  const signInTab=document.getElementById("geparuAdminSignInTab");
+  const signUpTab=document.getElementById("geparuAdminSignUpTab");
+  const forgotBtn=document.getElementById("geparuAdminForgotBtn");
+  const recoverySubmit=document.getElementById("geparuAdminRecoverySubmit");
+  const recoveryBack=document.getElementById("geparuAdminRecoveryBack");
+
+  if(signInTab) signInTab.addEventListener("click",()=>setAdminAuthMode("signin"));
+  if(signUpTab) signUpTab.addEventListener("click",()=>setAdminAuthMode("signup"));
+  if(googleBtn) googleBtn.addEventListener("click",()=>{
+    googleBtn.disabled=true;
+    googleBtn.textContent="Menghubungkan ke Google...";
+    loginWithGoogleGEPARU();
+  });
+  if(forgotBtn) forgotBtn.addEventListener("click",()=>{
+    setAdminAuthMode("signin");
+    showAdminRecovery(true);
+    const msg=document.getElementById("geparuAdminLoginMsg");
+    if(msg) msg.textContent="";
+    document.getElementById("geparuAdminEmail")?.focus();
+  });
+  if(recoveryBack) recoveryBack.addEventListener("click",()=>{
+    showAdminRecovery(false);
+    const msg=document.getElementById("geparuAdminLoginMsg");
+    if(msg) msg.textContent="";
+  });
+  if(recoverySubmit) recoverySubmit.addEventListener("click",async()=>{
+    const email=(document.getElementById("geparuAdminEmail")?.value || "").trim().toLowerCase();
+    const msg=document.getElementById("geparuAdminLoginMsg");
+    recoverySubmit.disabled=true;
+    recoverySubmit.textContent="Mengirim...";
+    if(msg){msg.style.color="#4a5568";msg.textContent="";}
+    try{
+      await requestAdminPasswordReset(email);
+      if(msg){
+        msg.style.color="#16794a";
+        msg.textContent="✓ Email reset password sudah diminta. Silakan cek Gmail admin.";
+      }
+    }catch(err){
+      if(msg){
+        msg.style.color="#b42318";
+        msg.textContent=err.message || "Gagal mengirim email reset password.";
+      }
+    }finally{
+      recoverySubmit.disabled=false;
+      recoverySubmit.textContent="Kirim Email Reset Password";
+    }
+  });
+
+  setAdminAuthMode("signin");
+
+  if(form) form.addEventListener("submit",async(e)=>{
+    e.preventDefault();
+    const email=document.getElementById("geparuAdminEmail").value.trim().toLowerCase();
+    const btnMsg=document.getElementById("geparuAdminLoginMsg");
+    btn.disabled=true;
+    btn.textContent=adminAuthMode==="signup" ? "Mendaftarkan..." : "Memeriksa...";
+    showAdminLogin("",false);
+    try{
+      if(adminAuthMode==="signup"){
+        const password=document.getElementById("geparuAdminPassword").value;
+        const confirm=document.getElementById("geparuAdminPasswordConfirm").value;
+        const result=await signUpAdminGEPARU(email,password,confirm);
+        if(result.loggedIn){
+          const approval=await checkCoreAdiimasaApproval();
+          if(String(approval.status).toUpperCase()!=="APPROVED"){
+            showCoreApprovalGate(approval.status,approval.row?.approval_note||"");
+            return;
+          }
+          showAdminDashboard();
+          await startDashboardAfterLogin();
+        }else{
+          setAdminAuthMode("signin");
+          document.getElementById("geparuAdminEmail").value=email;
+          if(btnMsg){btnMsg.style.color="#16794a";btnMsg.textContent="✓ Akun berhasil dibuat. Silakan cek Gmail untuk konfirmasi akun, lalu Sign In.";}
+        }
+      }else{
+        const password=document.getElementById("geparuAdminPasswordSignin").value;
+        await loginAdminGEPARU(email,password);
+        await openDashboardIfApproved();
+      }
+    }catch(err){
+      showAdminLogin(err.message || (adminAuthMode==="signup" ? "Pendaftaran gagal." : "Login gagal."),true);
+    }finally{
+      btn.disabled=false;
+      btn.textContent=adminAuthMode==="signup" ? "Daftar Akun Admin" : "Masuk ke Dashboard";
+    }
+  });
+  if(logout) logout.addEventListener("click",logoutAdminGEPARU);
+}
+
+async function startDashboardAfterLogin(){
+  if(dashboardStarted) return;
+  dashboardStarted=true;
+  loadAduan().catch(e=>{
+    rows=[];
+    ["total","diterima","diverifikasi","ditindaklanjuti","selesai","ditolak"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent="0";});
+    const tbody=document.getElementById("tbody");
+    if(tbody) tbody.innerHTML='<tr><td colspan="8" class="empty">Gagal memuat data Supabase. Klik Refresh untuk mencoba lagi.</td></tr>';
+    const info=document.getElementById("recordInfo");
+    if(info) info.textContent="Menampilkan 0 - 0 dari 0 data";
+    console.error("Gagal memuat aduan:",e);
+  });
+}
+
+async function openDashboardIfApproved(){
+  const approval=await checkCoreAdiimasaApproval();
+  if(String(approval.status||"PENDING").toUpperCase()!=="APPROVED"){
+    showCoreApprovalGate(approval.status,approval.row?.approval_note||"");
+    return false;
+  }
+  showAdminDashboard();
+  await startDashboardAfterLogin();
+  startAdminSessionWatcher();
+  return true;
+}
+
+async function initAdminAuth(){
+  setupAdminLoginUI();
+
+  // Jika baru kembali dari login Google, proses access_token dari URL terlebih dahulu.
+  if(await handleGoogleOAuthCallback()) return;
+
+  // Jika token masih tersimpan, validasi dulu ke Supabase lalu cek approval Core.
+  if(currentAccessToken && await verifyAdminSession()){
+    await openDashboardIfApproved();
+    return;
+  }
+
+  // Jika token sudah kedaluwarsa, gunakan refresh token sebelum mengecek approval.
+  if(await refreshAdminSession() && await verifyAdminSession()){
+    await openDashboardIfApproved();
+    return;
+  }
+
+  clearAdminSession();
+  showAdminLogin("Silakan login untuk membuka Dashboard GEPARU.",false);
+}
+
+let adminSessionWatcher=null;
+
+function startAdminSessionWatcher(){
+  if(adminSessionWatcher) clearInterval(adminSessionWatcher);
+  // Refresh berkala agar sesi aktif tidak tiba-tiba kedaluwarsa saat admin
+  // sedang bekerja di dashboard.
+  adminSessionWatcher=setInterval(async()=>{
+    if(!currentRefreshToken){
+      clearAdminSession();
+      location.reload();
+      return;
+    }
+    const ok=await refreshAdminSession();
+    if(!ok){
+      clearAdminSession();
+      location.reload();
+    }
+  },45*60*1000);
+}
 
 let rows = [];
 let currentPage = 1;
@@ -275,7 +1220,7 @@ function headers(){
 async function loadAduan(){
   const res = await fetch(
     ADUAN_URL +
-    "?select=nomor_aduan,tanggal_masuk,nama_pelapor,nomor_whatsapp,kategori,judul_aduan,kronologi,lokasi_kejadian,status,petugas,catatan" +
+    "?select=*" +
     "&order=tanggal_masuk.desc",
     {headers:headers(), cache:"no-store"}
   );
@@ -324,11 +1269,32 @@ function categoryClass(v){
 function filteredSortedData(){
   const q = norm(document.getElementById("search").value);
   const sf = document.getElementById("statusFilter").value;
+  const df = document.getElementById("dateFilter").value;
 
   let data = rows.filter(r => {
     const matchStatus = !sf || displayStatus(r.status) === sf;
-    const hay = [r.nomor_aduan,r.nama_pelapor,r.judul_aduan,r.kategori].map(norm).join(" ");
-    return matchStatus && (!q || hay.includes(q));
+    const hay = [r.nomor_aduan,r.nama_pelapor,r.judul_aduan,r.kategori,r.petugas].map(norm).join(" ");
+
+    let matchDate = true;
+    if(df){
+      const d = new Date(r.tanggal_masuk);
+      const now = new Date();
+      const startToday = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+      const endToday = new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+
+      if(Number.isNaN(d.getTime())) matchDate = false;
+      else if(df === "today") matchDate = d >= startToday && d < endToday;
+      else if(df === "7" || df === "30"){
+        const start = new Date(startToday);
+        start.setDate(start.getDate() - (Number(df)-1));
+        matchDate = d >= start && d < endToday;
+      }else if(df === "month"){
+        const start = new Date(now.getFullYear(),now.getMonth(),1);
+        matchDate = d >= start && d < endToday;
+      }
+    }
+
+    return matchStatus && matchDate && (!q || hay.includes(q));
   });
 
   const selectSort = document.getElementById("sort").value;
@@ -407,33 +1373,319 @@ function formatDateTime(v){
     d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"}) + "</span>";
 }
 
+function formatSimpleDate(v){
+  if(!v) return "-";
+  const d = new Date(v + (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? "T00:00:00" : ""));
+  if(isNaN(d)) return escapeHtml(v);
+  return d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
+}
+
 function escapeHtml(v){
   return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 }
 
-function detail(nomor){
+async function detail(nomor){
   const key = decodeURIComponent(nomor);
-  const r = rows.find(x => String(x.nomor_aduan) === key);
-  if(!r) return;
+  let r = rows.find(x => String(x.nomor_aduan) === key);
+
+  // Ambil ulang record yang dipilih langsung dari Supabase agar Detail selalu lengkap.
+  try {
+    // Untuk Detail, ambil seluruh kolom record yang dipilih.
+    // Ini menjaga agar field tambahan seperti identitas rahasia,
+    // tanggal kejadian, dan bukti pendukung tidak terlewat.
+    const detailUrl = ADUAN_URL +
+      "?select=*" +
+      "&nomor_aduan=eq." + encodeURIComponent(key);
+    const res = await fetch(detailUrl, {headers:headers(), cache:"no-store"});
+    if(res.ok){
+      const result = await res.json();
+      if(result.length) r = result[0];
+    }
+  } catch(e) {
+    console.warn("Detail aduan menggunakan data tabel karena pengambilan ulang gagal:", e);
+  }
+
+  if(!r){
+    alert("Data aduan tidak ditemukan.");
+    return;
+  }
+
   const content = document.getElementById("detailContent");
+  const statusValue = r.status ?? r.status_aduan;
+
+  // Nama kolom kerahasiaan mengikuti perkembangan struktur database.
+  // Gunakan beberapa fallback agar Detail tetap kompatibel dengan data yang sudah tersimpan.
+  const kerahasiaan =
+    r.kerahasiaan_identitas ??
+    r.kerahasiaan ??
+    r.rahasia ??
+    r.identitas_rahasia;
+
+  const tanggalKejadian =
+    r.tanggal_kejadian ??
+    r.tanggalKejadian ??
+    r.tanggal;
+
+  // WhatsApp Click-to-Chat
+  const waDigits = String(r.nomor_whatsapp || '').replace(/\D/g,'');
+  let waNumber = waDigits;
+  if(waNumber.startsWith('0')) waNumber = '62' + waNumber.slice(1);
+  if(waNumber.startsWith('8')) waNumber = '62' + waNumber;
+  const waStatus = displayStatus(r.status) || 'DITERIMA';
+  const waName = r.nama_pelapor || 'Bapak/Ibu';
+  const waNomorAduan = r.nomor_aduan || key;
+  const waMessage = `Halo ${waName}, kami dari GEPARU.\n\nTerkait aduan ${waNomorAduan}, status aduan Anda saat ini: ${waStatus}.\n\nSilakan cek perkembangan aduan melalui layanan Cek Status Aduan GEPARU.\n\nTerima kasih.`;
+  const waUrl = waNumber ? `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}` : '';
+
   const fields = [
     ["No. Aduan", r.nomor_aduan],
-    ["Tanggal Masuk", formatDateTime(r.tanggal_masuk).replace("<br>"," ")],
-    ["Pelapor", r.nama_pelapor],
+    ["Tanggal Masuk", formatDateTime(r.tanggal_masuk).replace(/<br\s*><span[^>]*>/i, " ").replace(/<\/span>/i, "")],
+    ["Nama Pelapor", r.nama_pelapor],
     ["WhatsApp", r.nomor_whatsapp],
+    ["WhatsApp Warga", waUrl ? `<a href="${waUrl}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;background:#16a34a;color:#fff;border-radius:8px;padding:9px 12px;font-weight:700;font-size:12px">WhatsApp Warga</a>` : `<span style="color:#a51f1f">Nomor WhatsApp tidak tersedia</span>`],
+    ["Identitas Rahasia", kerahasiaan],
+    ["Tanggal Kejadian", tanggalKejadian ? formatSimpleDate(tanggalKejadian) : "-"],
     ["Kategori", r.kategori],
     ["Judul", r.judul_aduan],
-    ["Status", displayStatus(r.status)],
-    ["Petugas", r.petugas],
-    ["Lokasi", r.lokasi_kejadian],
     ["Kronologi", r.kronologi],
+    ["Lokasi", r.lokasi_kejadian],
+    ["Status", displayStatus(statusValue)],
+    ["Petugas", r.petugas],
     ["Catatan", r.catatan]
   ];
-  content.innerHTML = fields.map(([k,v]) =>
-    `<div class="k">${escapeHtml(k)}</div><div class="v">${escapeHtml(v || "-")}</div>`
+  content.innerHTML = fields.map(([k,v]) => `<div class="k">${escapeHtml(k)}</div><div class="v">${k === "WhatsApp Warga" ? (v || "-") : escapeHtml(v || "-")}</div>`
   ).join("");
+
+  // bukti_pendukung dari database dapat berupa JSON array/object atau string path.
+  const buktiRaw = r.bukti_pendukung;
+  let files = [];
+  if(Array.isArray(buktiRaw)){
+    files = buktiRaw;
+  } else if(buktiRaw && typeof buktiRaw === "object"){
+    files = [buktiRaw];
+  } else if(String(buktiRaw || "").trim()){
+    const raw = String(buktiRaw).trim();
+    try {
+      const parsed = JSON.parse(raw);
+      files = Array.isArray(parsed) ? parsed : [parsed];
+    } catch(e) {
+      files = raw.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+    }
+  }
+
+  if(files.length){
+    // FIX ONLY: normalisasi path Storage agar data lama/baru tetap bisa dibuka.
+    // Tidak mengubah data aduan, hanya cara dashboard membentuk link bukti.
+    function normalizeBuktiPath(value){
+      let raw = String(value || "").trim();
+      if(!raw) return "";
+
+      // URL Supabase lama: ambil kembali path object-nya.
+      if(/^https?:\/\//i.test(raw)){
+        if(!raw.startsWith(SUPABASE_URL)) return raw;
+        const marker = "/storage/v1/object/";
+        const pos = raw.indexOf(marker);
+        if(pos < 0) return raw;
+        let part = raw.slice(pos + marker.length);
+        part = part.replace(/^sign\//i, "").replace(/^public\//i, "").replace(/^authenticated\//i, "");
+        if(/^bukti-aduan\//i.test(part)) part = part.replace(/^bukti-aduan\//i, "");
+        return part.replace(/^\/+/, "");
+      }
+
+      let clean = raw.replace(/^\/+/, "");
+      clean = clean.replace(/^storage\/v1\/object\//i, "");
+      clean = clean.replace(/^(?:sign|public|authenticated)\//i, "");
+      clean = clean.replace(/^bukti-aduan\//i, "");
+      return clean;
+    }
+
+    function encodeStoragePath(path){
+      return String(path).split("/").filter(Boolean).map(part => {
+        try { return encodeURIComponent(decodeURIComponent(part)); }
+        catch(e) { return encodeURIComponent(part); }
+      }).join("/");
+    }
+
+    // Signed URL adalah jalur utama untuk bucket private.
+    // Jika endpoint signed gagal tetapi bucket public, gunakan public URL sebagai fallback.
+    async function getBuktiUrl(path){
+      const normalized = normalizeBuktiPath(path);
+      if(!normalized) throw new Error("Path bukti pendukung kosong.");
+      if(/^https?:\/\//i.test(normalized)) return normalized;
+
+      const encodedPath = encodeStoragePath(normalized);
+      const publicUrl = SUPABASE_URL + "/storage/v1/object/public/bukti-aduan/" + encodedPath;
+
+      try{
+        const signRes = await fetch(
+          SUPABASE_URL + "/storage/v1/object/sign/bukti-aduan/" + encodedPath,
+          {
+            method:"POST",
+            headers:Object.assign({}, headers(), {"Content-Type":"application/json"}),
+            body:JSON.stringify({expiresIn:3600}),
+            cache:"no-store"
+          }
+        );
+
+        if(signRes.ok){
+          const signed = await signRes.json();
+          const signedPath = signed.signedURL || signed.signedUrl || "";
+          if(signedPath){
+            return /^https?:\/\//i.test(signedPath)
+              ? signedPath
+              : SUPABASE_URL + "/storage/v1" + signedPath;
+          }
+        } else {
+          console.warn("Signed URL gagal, mencoba URL public bukti pendukung.", await signRes.text());
+        }
+      }catch(e){
+        console.warn("Signed URL bukti pendukung gagal, mencoba URL public.", e);
+      }
+
+      return publicUrl;
+    }
+
+    const buktiHtmlParts = [];
+    for(let i=0;i<files.length;i++){
+      const item = files[i];
+      const path = typeof item === "string" ? item : (item?.path || item?.url || "");
+      if(!path) continue;
+      const name = (typeof item === "object" && item?.name) || String(path).split("/").pop() || ("Bukti " + (i + 1));
+      const ext = (name.split(".").pop() || "").toLowerCase();
+      const isImage = ["jpg","jpeg","png","gif","webp","heic","heif"].includes(ext);
+      const isVideo = ["mp4","mov","m4v","avi","mkv","webm","3gp","mpeg","mpg"].includes(ext);
+
+      try{
+        const url = await getBuktiUrl(path);
+        if(isImage){
+          buktiHtmlParts.push(`<div style="margin-bottom:12px"><a href="${url}" target="_blank" rel="noopener noreferrer" title="Klik untuk membuka di tab baru"><img src="${url}" alt="${escapeHtml(name)}" style="max-width:300px;max-height:200px;border-radius:8px;border:1px solid #e2e8f0;object-fit:cover;display:block"></a><div style="font-size:11px;color:#718096;margin-top:4px"><a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:none">${escapeHtml(name)} ↗ Buka di tab baru</a></div></div>`);
+        }else if(isVideo){
+          buktiHtmlParts.push(`<div style="margin-bottom:12px"><video controls preload="metadata" style="max-width:400px;max-height:240px;border-radius:8px;border:1px solid #e2e8f0;display:block"><source src="${url}"></video><div style="font-size:11px;color:#718096;margin-top:4px"><a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:none">${escapeHtml(name)} ↗ Buka di tab baru</a></div></div>`);
+        }else{
+          buktiHtmlParts.push(`<div style="margin-bottom:7px"><a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:none">📎 ${escapeHtml(name)} ↗ Buka di tab baru</a></div>`);
+        }
+      }catch(e){
+        console.warn("Gagal membuat link bukti pendukung:", path, e);
+        buktiHtmlParts.push(`<div style="margin-bottom:7px"><span style="color:#a51f1f">⚠ ${escapeHtml(name)} — link tidak dapat dibuat.</span></div>`);
+      }
+    }
+
+    const buktiHtml = buktiHtmlParts.join("");
+    if(buktiHtml) {
+      content.innerHTML += `<div class="k">Bukti Pendukung</div><div class="v">${buktiHtml}</div>`;
+    } else {
+      content.innerHTML += `<div class="k">Bukti Pendukung</div><div class="v">-</div>`;
+    }
+  } else {
+    content.innerHTML += `<div class="k">Bukti Pendukung</div><div class="v">Tidak ada bukti pendukung.</div>`;
+  }
+
+  // Isi kontrol pengelolaan berdasarkan record yang sedang dibuka.
+  document.getElementById("detailActions").style.display = "block";
+  document.getElementById("detailStatus").value = displayStatus(statusValue) || "DITERIMA";
+  await ensurePetugasMasterLoaded();
+  populateDetailPetugas(r.petugas || "");
+  document.getElementById("detailCatatan").value = r.catatan || "";
+  document.getElementById("detailActions").dataset.nomor = r.nomor_aduan || key;
+  document.getElementById("saveDetailMsg").textContent = "";
+
   document.getElementById("modalBackdrop").classList.add("show");
 }
+
+
+function populateDetailPetugas(currentName=""){
+  const select=document.getElementById("detailPetugas");
+  if(!select) return;
+  const current=String(currentName||"").trim();
+  const active=(Array.isArray(petugasMasterData)?petugasMasterData:[])
+    .filter(p=>String(p.status||"").toUpperCase()==="AKTIF")
+    .sort((a,b)=>String(a.nama_petugas||"").localeCompare(String(b.nama_petugas||""),"id"));
+  const options=['<option value="">Pilih petugas...</option>'];
+  active.forEach(p=>{
+    const name=String(p.nama_petugas||"").trim();
+    if(name) options.push(`<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`);
+  });
+  if(current && !active.some(p=>String(p.nama_petugas||"").trim()===current)){
+    options.push(`<option value="${escapeHtml(current)}">${escapeHtml(current)} (petugas saat ini)</option>`);
+  }
+  select.innerHTML=options.join("");
+  select.value=current;
+}
+
+async function ensurePetugasMasterLoaded(){
+  try{
+    if(!petugasMasterData.length || !petugasDbConnected){
+      await loadPetugasFromSupabase();
+    }
+  }catch(err){
+    console.warn("Daftar petugas belum dapat dimuat:",err);
+  }
+}
+
+async function saveDetailChanges(){
+  const actions = document.getElementById("detailActions");
+  const nomor = actions.dataset.nomor;
+  if(!nomor) return;
+
+  const btn = document.getElementById("saveDetail");
+  const msg = document.getElementById("saveDetailMsg");
+  const payload = {
+    status: document.getElementById("detailStatus").value,
+    petugas: document.getElementById("detailPetugas").value.trim(),
+    catatan: document.getElementById("detailCatatan").value.trim()
+  };
+
+  btn.disabled = true;
+  btn.textContent = "Menyimpan...";
+  msg.textContent = "";
+
+  try{
+    const url = ADUAN_URL + "?nomor_aduan=eq." + encodeURIComponent(nomor);
+    const res = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        ...headers(),
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if(!res.ok){
+      const text = await res.text();
+      throw new Error(text || ("HTTP " + res.status));
+    }
+
+    const updated = await res.json();
+    const record = Array.isArray(updated) ? updated[0] : null;
+
+    // Perbarui data lokal tanpa menunggu refresh.
+    const idx = rows.findIndex(x => String(x.nomor_aduan) === String(nomor));
+    if(idx >= 0){
+      rows[idx] = {...rows[idx], ...payload, ...(record || {})};
+    }
+
+    updateCards();
+    render();
+
+    msg.style.color = "#14743e";
+    msg.textContent = "✓ Perubahan berhasil disimpan.";
+
+    // Setelah penyimpanan berhasil, tutup popup Detail Aduan otomatis.
+    setTimeout(() => {
+      document.getElementById("modalBackdrop").classList.remove("show");
+    }, 350);
+  }catch(e){
+    console.error(e);
+    msg.style.color = "#a51f1f";
+    msg.textContent = "Gagal menyimpan: " + e.message;
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "Simpan Perubahan";
+  }
+}
+
+document.getElementById("saveDetail").addEventListener("click", saveDetailChanges);
 
 document.getElementById("closeModal").addEventListener("click",()=>document.getElementById("modalBackdrop").classList.remove("show"));
 document.getElementById("modalBackdrop").addEventListener("click",e=>{
@@ -443,23 +1695,429 @@ document.addEventListener("keydown",e=>{
   if(e.key === "Escape") document.getElementById("modalBackdrop").classList.remove("show");
 });
 
-/* Menu responsif HP */
-const mobileMenu = document.getElementById("mobileMenu");
-const mobileOverlay = document.getElementById("mobileOverlay");
-function closeMobileMenu(){ document.body.classList.remove("sidebar-open"); }
-mobileMenu.addEventListener("click",()=>document.body.classList.toggle("sidebar-open"));
-mobileOverlay.addEventListener("click",closeMobileMenu);
-document.querySelectorAll(".nav button").forEach(btn=>btn.addEventListener("click",closeMobileMenu));
+function setActiveNav(active){
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+  active.classList.add("active");
+}
+
+function buildPetugasData(){
+  const map = {};
+  (Array.isArray(petugasMasterData)?petugasMasterData:[]).forEach(p=>{
+    const nama=String(p.nama_petugas||"").trim();
+    if(!nama) return;
+    const key=nama.toLowerCase();
+    if(!map[key]) map[key]={nama,total:0,diterima:0,diverifikasi:0,ditindaklanjuti:0,selesai:0,ditolak:0,status:p.status||"NONAKTIF"};
+  });
+  rows.forEach(r => {
+    const nama = String(r.petugas || "").trim();
+    if(!nama) return;
+    const key = nama.toLowerCase();
+    if(!map[key]) map[key] = {nama, total:0, diterima:0, diverifikasi:0, ditindaklanjuti:0, selesai:0, ditolak:0, status:""};
+    const item = map[key];
+    item.total++;
+    const st = displayStatus(r.status);
+    if(st === "DITERIMA") item.diterima++;
+    if(st === "DIVERIFIKASI") item.diverifikasi++;
+    if(st === "DITINDAKLANJUTI") item.ditindaklanjuti++;
+    if(st === "SELESAI") item.selesai++;
+    if(st === "DITOLAK") item.ditolak++;
+  });
+  return Object.values(map).sort((a,b)=>a.nama.localeCompare(b.nama,"id"));
+}
+function renderPetugas(){
+  // Versi dashboard terbaru menggunakan pencarian master petugas.
+  // Tetap aman bila elemen pencarian lama tidak ada.
+  const searchEl = document.getElementById("petugasSearch");
+  const q = searchEl ? norm(searchEl.value) : "";
+  const data = buildPetugasData().filter(x=>!q || norm(x.nama).includes(q));
+  const tbody = document.getElementById("petugasTbody");
+  if(!data.length){
+    tbody.innerHTML = '<tr><td colspan="8" class="petugas-empty">Belum ada data petugas pada aduan yang masuk.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(x=>`
+    <tr>
+      <td><b>${escapeHtml(x.nama)}</b></td>
+      <td class="num">${x.total}</td>
+      <td class="num">${x.diterima}</td>
+      <td class="num">${x.diverifikasi}</td>
+      <td class="num">${x.ditindaklanjuti}</td>
+      <td class="num">${x.selesai}</td>
+      <td class="num">${x.ditolak}</td>
+      <td><button class="detail-btn" onclick="lihatAduanPetugas('${encodeURIComponent(x.nama)}')">Lihat Aduan</button></td>
+    </tr>`).join("");
+}
+
+function lihatAduanPetugas(nama){
+  const value = decodeURIComponent(nama);
+  showDataAduan();
+  document.getElementById("search").value = value;
+  currentPage = 1;
+  render();
+}
+
+function showOverview(){
+  window.scrollTo({top:0,behavior:"auto"});
+  window.scrollTo({top:0,behavior:"auto"});
+  document.getElementById("settingsPanel").style.display = "none";
+  setActiveNav(document.getElementById("navOverview"));
+  document.getElementById("overviewCards").style.display = "grid";
+  document.getElementById("dataAduanPanel").style.display = "block";
+  document.getElementById("petugasPanel").style.display = "none";
+  document.querySelector(".top h1").textContent = "Dashboard GEPARU";
+  document.querySelector(".breadcrumb b").textContent = "GEPARU";
+  document.getElementById("panelTitle").textContent = "Data Aduan GEPARU";
+}
+
+function showDataAduan(){
+  document.getElementById("settingsPanel").style.display = "none";
+  setActiveNav(document.getElementById("navDataAduan"));
+  document.getElementById("overviewCards").style.display = "none";
+  document.getElementById("dataAduanPanel").style.display = "block";
+  document.getElementById("petugasPanel").style.display = "none";
+  document.querySelector(".top h1").textContent = "Data Aduan GEPARU";
+  document.querySelector(".breadcrumb b").textContent = "Data Aduan";
+  document.getElementById("panelTitle").textContent = "Seluruh Data Aduan GEPARU";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function showPetugas(){
+  await initPetugasMaster();
+  document.getElementById("settingsPanel").style.display = "none";
+  setActiveNav(document.getElementById("navPetugas"));
+  document.getElementById("overviewCards").style.display = "none";
+  document.getElementById("dataAduanPanel").style.display = "none";
+  document.getElementById("petugasPanel").style.display = "block";
+  document.querySelector(".top h1").textContent = "Petugas GEPARU";
+  document.querySelector(".breadcrumb b").textContent = "Petugas";
+  renderPetugas();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+
+const PETUGAS_MASTER_STORAGE_KEY="geparu_petugas_master_ui_v1";
+let petugasMasterData=[];
+let petugasDbConnected=false;
+
+function getPetugasMasterData(){try{return JSON.parse(localStorage.getItem(PETUGAS_MASTER_STORAGE_KEY)||"[]")}catch(e){return[]}}
+function savePetugasMasterData(){localStorage.setItem(PETUGAS_MASTER_STORAGE_KEY,JSON.stringify(petugasMasterData))}
+function escPetugas(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;")}
+
+const PETUGAS_DB_URL=SUPABASE_URL+"/rest/v1/petugas_geparu";
+function petugasHeaders(extra={}){return Object.assign({"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json","Accept":"application/json"},extra)}
+
+async function loadPetugasFromSupabase(){
+  const res=await fetch(PETUGAS_DB_URL+"?select=*&order=created_at.desc",{headers:petugasHeaders()});
+  if(!res.ok){const t=await res.text();throw new Error("Petugas Supabase "+res.status+": "+t)}
+  const rows=await res.json();
+  petugasMasterData=Array.isArray(rows)?rows:[];
+  petugasDbConnected=true;
+  renderPetugasMaster();
+  return petugasMasterData;
+}
+
+function renderPetugasMaster(){
+  const search=document.getElementById("petugasMasterSearch"),status=document.getElementById("petugasMasterStatus"),body=document.getElementById("petugasMasterBody"),summary=document.getElementById("petugasMasterSummary");
+  if(!search||!status||!body||!summary)return;
+  const q=norm(search.value||""),sf=status.value;
+  const filtered=petugasMasterData.filter(p=>{
+    const text=[p.nama_petugas,p.whatsapp,p.jabatan,p.username].join(" ").toLowerCase();
+    const ps=String(p.status||"").trim().toUpperCase();
+    return(!q||text.includes(q))&&(sf==="SEMUA"||ps===String(sf).trim().toUpperCase());
+  });
+  if(!filtered.length)body.innerHTML='<tr><td colspan="7" class="empty">Belum ada data petugas.</td></tr>';
+  else body.innerHTML=filtered.map((p,i)=>`<tr><td>${i+1}</td><td><strong>${escPetugas(p.nama_petugas)}</strong></td><td>${escPetugas(p.whatsapp||"-")}</td><td>${escPetugas(p.jabatan||"-")}</td><td>${escPetugas(p.username||"-")}</td><td><span class="petugas-status ${p.status==="AKTIF"?"active":"inactive"}">${escPetugas(p.status||"NONAKTIF")}</span></td><td><div class="petugas-action"><button class="settings-btn" type="button" onclick="editPetugasMaster('${encodeURIComponent(p.id)}')">Edit</button><button class="settings-btn ${p.status==="NONAKTIF"?"primary":""}" type="button" onclick="togglePetugasMaster('${encodeURIComponent(p.id)}')">${p.status==="AKTIF"?"Nonaktifkan":"Aktifkan"}</button><button class="settings-btn" type="button" onclick="deletePetugasMaster('${encodeURIComponent(p.id)}')" style="color:#c62828;border-color:#f0c7c7">Hapus</button></div></td></tr>`).join("");
+  summary.textContent=`Menampilkan ${filtered.length} dari ${petugasMasterData.length} petugas`;
+}
+
+function openPetugasMasterModal(id=""){
+  document.getElementById("petugasMasterForm").reset();
+  document.getElementById("petugasMasterEditId").value="";
+  document.getElementById("pmStatus").value="AKTIF";
+  document.getElementById("petugasMasterModalTitle").textContent=id?"Edit Petugas":"Tambah Petugas";
+  if(id){
+    const p=petugasMasterData.find(x=>String(x.id)===String(id));
+    if(!p)return;
+    document.getElementById("petugasMasterEditId").value=p.id;
+    document.getElementById("pmNama").value=p.nama_petugas||"";
+    document.getElementById("pmWhatsapp").value=p.whatsapp||"";
+    document.getElementById("pmJabatan").value=p.jabatan||"";
+    document.getElementById("pmUsername").value=p.username||"";
+    document.getElementById("pmStatus").value=p.status||"AKTIF";
+    document.getElementById("pmCatatan").value=p.catatan||"";
+  }
+  document.getElementById("petugasMasterModal").classList.add("show");
+  setTimeout(()=>document.getElementById("pmNama").focus(),50);
+}
+function closePetugasMasterModal(){document.getElementById("petugasMasterModal").classList.remove("show")}
+
+async function savePetugasMaster(e){
+  e.preventDefault();
+  const id=document.getElementById("petugasMasterEditId").value;
+  const payload={client_code:"GEPARU",nama_petugas:document.getElementById("pmNama").value.trim(),whatsapp:document.getElementById("pmWhatsapp").value.trim()||null,jabatan:document.getElementById("pmJabatan").value.trim()||null,username:document.getElementById("pmUsername").value.trim()||null,status:document.getElementById("pmStatus").value,catatan:document.getElementById("pmCatatan").value.trim()||null};
+  if(!payload.nama_petugas){alert("Nama petugas wajib diisi.");return;}
+  const submit=e.submitter; if(submit){submit.disabled=true;submit.textContent="Menyimpan...";}
+  try{
+    if(id){
+      const res=await fetch(PETUGAS_DB_URL+"?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:petugasHeaders({"Prefer":"return=representation"}),body:JSON.stringify(payload)});
+      if(!res.ok)throw new Error(await res.text());
+    }else{
+      const res=await fetch(PETUGAS_DB_URL,{method:"POST",headers:petugasHeaders({"Prefer":"return=representation"}),body:JSON.stringify(payload)});
+      if(!res.ok)throw new Error(await res.text());
+    }
+    await loadPetugasFromSupabase();
+    closePetugasMasterModal();
+  }catch(err){alert("Gagal menyimpan petugas ke Supabase.\n\n"+err.message)}
+  finally{if(submit){submit.disabled=false;submit.textContent="Simpan Petugas";}}
+}
+
+async function editPetugasMaster(id){openPetugasMasterModal(decodeURIComponent(id))}
+async function togglePetugasMaster(id){
+  const decoded=decodeURIComponent(id),p=petugasMasterData.find(x=>String(x.id)===String(decoded));if(!p)return;
+  const next=p.status==="AKTIF"?"NONAKTIF":"AKTIF";
+  try{
+    const res=await fetch(PETUGAS_DB_URL+"?id=eq."+encodeURIComponent(decoded),{method:"PATCH",headers:petugasHeaders({"Prefer":"return=minimal"}),body:JSON.stringify({status:next})});
+    if(!res.ok)throw new Error(await res.text());
+    await loadPetugasFromSupabase();
+  }catch(err){alert("Gagal mengubah status petugas.\n\n"+err.message)}
+}
+async function deletePetugasMaster(id){
+  const decoded=decodeURIComponent(id),p=petugasMasterData.find(x=>String(x.id)===String(decoded));if(!p)return;
+  const ok=confirm(`Hapus petugas "${p.nama_petugas||"ini"}"?\n\nData akan dihapus permanen dari tabel petugas_geparu.`);if(!ok)return;
+  try{
+    const res=await fetch(PETUGAS_DB_URL+"?id=eq."+encodeURIComponent(decoded),{method:"DELETE",headers:petugasHeaders({"Prefer":"return=minimal"})});
+    if(!res.ok)throw new Error(await res.text());
+    await loadPetugasFromSupabase();
+  }catch(err){alert("Gagal menghapus petugas.\n\n"+err.message)}
+}
+
+async function initPetugasMaster(){
+  const old= getPetugasMasterData();
+  try{await loadPetugasFromSupabase();}
+  catch(err){
+    petugasDbConnected=false;
+    petugasMasterData=old;
+    renderPetugasMaster();
+    console.warn("Petugas Supabase belum dapat dimuat:",err);
+  }
+}
+
+const GEPARU_SETTINGS_KEY="geparu_client_settings_ui_v1";
+placeSettingsPanel();
+const DEFAULT_GEPARU_SETTINGS={clientName:"GEPARU",orgName:"Generasi Padjajaran Baru",description:"Client Modul Sosial di bawah naungan PT Adiimasa Distribusi Indonesia.",contact:"",notifWA:false,notifEmail:false,notifStatus:false};
+const PENGATURAN_URL = SUPABASE_URL + "/rest/v1/pengaturan_geparu";
+let pengaturanDbRow = null;
+
+// Versi aman: untuk sementara Supabase hanya memakai kolom inti yang sudah
+// dipastikan ada. Opsi notifikasi/kontak tetap disimpan di browser sampai
+// struktur kolom tambahannya ditetapkan di database.
+const SETTINGS_CORE_FIELDS = "id,client_code,nama_client,nama_organisasi,deskripsi";
+
+function getGepSettings(){
+  try{
+    const s=JSON.parse(localStorage.getItem(GEPARU_SETTINGS_KEY)||"null");
+    return Object.assign({},DEFAULT_GEPARU_SETTINGS,s||{});
+  }catch(e){return Object.assign({},DEFAULT_GEPARU_SETTINGS);}
+}
+function setSettingsMessage(text,color="#718096"){
+  const m=document.getElementById("settingsSaveMessage");
+  if(!m)return;
+  m.textContent=text;
+  m.style.color=color;
+}
+function fillSettingsForm(s=getGepSettings()){
+  document.getElementById("setClientName").value=s.clientName||DEFAULT_GEPARU_SETTINGS.clientName;
+  document.getElementById("setOrgName").value=s.orgName||DEFAULT_GEPARU_SETTINGS.orgName;
+  document.getElementById("setDescription").value=s.description||DEFAULT_GEPARU_SETTINGS.description;
+  document.getElementById("setContact").value=s.contact||"";
+  document.getElementById("setNotifWA").checked=!!s.notifWA;
+  document.getElementById("setNotifEmail").checked=!!s.notifEmail;
+  document.getElementById("setNotifStatus").checked=!!s.notifStatus;
+}
+function dbRowToSettings(row){
+  return {
+    ...getGepSettings(),
+    clientName:row?.nama_client || DEFAULT_GEPARU_SETTINGS.clientName,
+    orgName:row?.nama_organisasi || DEFAULT_GEPARU_SETTINGS.orgName,
+    description:row?.deskripsi || DEFAULT_GEPARU_SETTINGS.description
+  };
+}
+async function loadSettingsFromSupabase(){
+  try{
+    const res=await fetch(PENGATURAN_URL+"?select="+encodeURIComponent(SETTINGS_CORE_FIELDS)+"&client_code=eq.GEPARU&limit=1",{
+      headers:headers(),cache:"no-store"
+    });
+    if(!res.ok)throw new Error(await res.text()||"Gagal membaca pengaturan Supabase.");
+    const data=await res.json();
+    if(data.length){
+      pengaturanDbRow=data[0];
+      const s=dbRowToSettings(data[0]);
+      localStorage.setItem(GEPARU_SETTINGS_KEY,JSON.stringify(s));
+      fillSettingsForm(s);
+      setSettingsMessage("✓ Pengaturan utama dimuat dari Supabase. Opsi notifikasi masih tersimpan lokal.","#17824a");
+    }else{
+      pengaturanDbRow=null;
+      fillSettingsForm();
+      setSettingsMessage("Baris pengaturan GEPARU belum ditemukan di Supabase. Klik Simpan untuk membuatnya.","#a56a00");
+    }
+  }catch(e){
+    console.warn("loadSettingsFromSupabase",e);
+    pengaturanDbRow=null;
+    fillSettingsForm();
+    setSettingsMessage("⚠ Supabase pengaturan belum dapat dibaca. Tampilan tetap memakai data lokal.","#a56a00");
+  }
+}
+async function saveSettingsUI(){
+  const s={
+    clientName:document.getElementById("setClientName").value.trim()||DEFAULT_GEPARU_SETTINGS.clientName,
+    orgName:document.getElementById("setOrgName").value.trim()||DEFAULT_GEPARU_SETTINGS.orgName,
+    description:document.getElementById("setDescription").value.trim()||DEFAULT_GEPARU_SETTINGS.description,
+    contact:document.getElementById("setContact").value.trim(),
+    notifWA:document.getElementById("setNotifWA").checked,
+    notifEmail:document.getElementById("setNotifEmail").checked,
+    notifStatus:document.getElementById("setNotifStatus").checked
+  };
+  localStorage.setItem(GEPARU_SETTINGS_KEY,JSON.stringify(s));
+  const btn=document.getElementById("btnSaveSettings");
+  if(btn){btn.disabled=true;btn.textContent="Menyimpan...";}
+  try{
+    const corePayload={
+      client_code:"GEPARU",
+      nama_client:s.clientName,
+      nama_organisasi:s.orgName,
+      deskripsi:s.description
+    };
+
+    if(!pengaturanDbRow){
+      await loadSettingsFromSupabase();
+    }
+
+    if(!pengaturanDbRow){
+      const ins=await fetch(PENGATURAN_URL,{
+        method:"POST",
+        headers:Object.assign({},headers(),{"Content-Type":"application/json","Prefer":"return=representation"}),
+        body:JSON.stringify(corePayload)
+      });
+      if(!ins.ok)throw new Error(await ins.text()||"Gagal membuat baris pengaturan GEPARU.");
+      const d=await ins.json();
+      if(!d.length)throw new Error("Baris pengaturan berhasil dibuat tetapi tidak dikembalikan Supabase.");
+      pengaturanDbRow=d[0];
+    }else{
+      const res=await fetch(PENGATURAN_URL+"?client_code=eq.GEPARU",{
+        method:"PATCH",
+        headers:Object.assign({},headers(),{"Content-Type":"application/json","Prefer":"return=representation"}),
+        body:JSON.stringify(corePayload)
+      });
+      if(!res.ok)throw new Error(await res.text()||"Gagal memperbarui pengaturan GEPARU.");
+      const data=await res.json();
+      if(data.length)pengaturanDbRow=data[0];
+    }
+
+    setSettingsMessage("✓ Pengaturan utama berhasil disimpan ke Supabase. Opsi notifikasi/kontak tersimpan lokal sampai kolom database ditetapkan.","#17824a");
+  }catch(e){
+    console.error(e);
+    setSettingsMessage("⚠ Gagal menyimpan ke Supabase: "+(e.message||e),"#b42318");
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent="Simpan Pengaturan";}
+  }
+}
+async function resetSettingsUI(){
+  localStorage.removeItem(GEPARU_SETTINGS_KEY);
+  fillSettingsForm();
+  setSettingsMessage("Pengaturan dikembalikan ke nilai awal.","#718096");
+}
+function placeSettingsPanel(){
+  const main=document.querySelector("main.main");
+  const panel=document.getElementById("settingsPanel");
+  const footer=main ? main.querySelector(".footer") : null;
+  if(main && panel && panel.parentElement!==main){
+    if(footer) main.insertBefore(panel,footer);
+    else main.appendChild(panel);
+  }
+}
+
+async function showSettings(){
+  placeSettingsPanel();
+  fillSettingsForm();
+  loadSettingsFromSupabase();
+  setActiveNav(document.getElementById("navPengaturan"));
+  document.getElementById("overviewCards").style.display = "none";
+  document.getElementById("dataAduanPanel").style.display = "none";
+  document.getElementById("petugasPanel").style.display = "none";
+  document.getElementById("settingsPanel").style.display = "block";
+  document.querySelector(".top h1").textContent = "Pengaturan GEPARU";
+  document.querySelector(".breadcrumb b").textContent = "Pengaturan";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function hideSettings(){
+  document.getElementById("settingsPanel").style.display = "none";
+}
+
+function showOverviewFixed(){
+  hideSettings();
+  showOverview();
+}
+function showDataAduanFixed(){
+  hideSettings();
+  showDataAduan();
+}
+function showPetugasFixed(){
+  hideSettings();
+  showPetugas();
+}
+
+document.getElementById("navOverview").addEventListener("click",showOverviewFixed);
+document.getElementById("navDataAduan").addEventListener("click",showDataAduanFixed);
+document.getElementById("navPetugas").addEventListener("click",showPetugasFixed);
+document.getElementById("navPengaturan").addEventListener("click",showSettings);
+document.getElementById("btnSaveSettings").addEventListener("click",saveSettingsUI);
+document.getElementById("btnResetSettings").addEventListener("click",resetSettingsUI);
+(()=>{
+  const el=(id)=>document.getElementById(id);
+  el("petugasMasterSearch")?.addEventListener("input",renderPetugasMaster);
+  el("petugasMasterStatus")?.addEventListener("change",renderPetugasMaster);
+  el("btnTambahPetugas")?.addEventListener("click",()=>openPetugasMasterModal());
+  el("petugasMasterClose")?.addEventListener("click",closePetugasMasterModal);
+  el("petugasMasterCancel")?.addEventListener("click",closePetugasMasterModal);
+  el("petugasMasterForm")?.addEventListener("submit",savePetugasMaster);
+  el("petugasMasterModal")?.addEventListener("click",e=>{if(e.target.id==="petugasMasterModal")closePetugasMasterModal();});
+})();
+document.getElementById("refreshPetugas").addEventListener("click",async()=>{
+  const b=document.getElementById("refreshPetugas");
+  b.disabled=true; b.textContent="Memuat...";
+  try{
+    // Refresh PETUGAS hanya memuat ulang master petugas.
+    // Tidak menyentuh data aduan agar tombol Refresh Data Aduan tetap independen.
+    const masterSearch=document.getElementById("petugasMasterSearch");
+    if(masterSearch) masterSearch.value="";
+    const masterStatus=document.getElementById("petugasMasterStatus");
+    if(masterStatus) masterStatus.value="SEMUA";
+
+    await loadPetugasFromSupabase();
+    renderPetugasMaster();
+    renderPetugas();
+  }
+  catch(e){ alert("Gagal memuat data petugas: "+e.message); }
+  finally{ b.disabled=false; b.textContent="↻ Refresh"; }
+});
 
 document.getElementById("search").addEventListener("input",()=>{currentPage=1;render();});
 document.getElementById("statusFilter").addEventListener("change",()=>{currentPage=1;render();});
+document.getElementById("dateFilter").addEventListener("change",()=>{currentPage=1;render();});
 document.getElementById("sort").addEventListener("change",()=>{currentPage=1;render();});
 
 document.getElementById("refresh").addEventListener("click",async()=>{
   const b=document.getElementById("refresh");
   b.disabled=true; b.textContent="Memuat...";
-  try{await loadAduan();}
-  catch(e){alert("Gagal memuat data: "+e.message);}
+  try{
+    // Refresh DATA ADUAN: kosongkan pencarian lalu ambil ulang data aduan.
+    const aduanSearch=document.getElementById("search");
+    if(aduanSearch) aduanSearch.value="";
+    currentPage=1;
+    await loadAduan();
+  }
+  catch(e){alert("Gagal memuat data aduan: "+e.message);}
   finally{b.disabled=false;b.textContent="↻ Refresh";}
 });
 
@@ -479,11 +2137,9 @@ document.querySelectorAll("th[data-sort]").forEach(th=>{
   });
 });
 
-loadAduan().catch(e=>{
-  document.getElementById("tbody").innerHTML =
-    '<tr><td colspan="8" class="empty">Gagal memuat data Supabase.</td></tr>';
-  document.getElementById("recordInfo").textContent = "Gagal memuat data.";
-  console.error(e);
+initAdminAuth().catch(e=>{
+  console.error("Gagal menginisialisasi login admin:",e);
+  showAdminLogin("Gagal menyiapkan login: "+(e?.message || String(e)),true);
 });
 </script>
 </body>
