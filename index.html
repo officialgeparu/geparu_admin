@@ -676,7 +676,7 @@ th .sort-icon{font-size:10px;color:#8a97a8;margin-left:3px}
           <label class="setting-check"><input type="checkbox" id="setNotifWA"><span><b>WhatsApp</b><small>Notifikasi perubahan status aduan</small></span></label>
           <label class="setting-check"><input type="checkbox" id="setNotifEmail"><span><b>Email</b><small>Notifikasi administrasi</small></span></label>
           <label class="setting-check"><input type="checkbox" id="setNotifStatus"><span><b>Notifikasi Status</b><small>Pemberitahuan ketika status aduan berubah</small></span></label>
-          <div class="settings-note">Layanan pengiriman belum disambungkan.</div>
+          <div class="settings-note">Layanan pengiriman.</div>
         </div>
 
         <div class="setting-card">
@@ -2015,7 +2015,7 @@ async function loadSettingsFromSupabase(){
       const s=dbRowToSettings(data[0]);
       localStorage.setItem(GEPARU_SETTINGS_KEY,JSON.stringify(s));
       fillSettingsForm(s);
-      setSettingsMessage("✓ Pengaturan utama dimuat.","#17824a");
+      setSettingsMessage(".","#17824a");
     }else{
       pengaturanDbRow=null;
       fillSettingsForm();
