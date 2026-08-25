@@ -1171,12 +1171,19 @@ async function loginAdminGEPARU(email,password){
   sessionStorage.setItem("geparu_admin_email",currentAdminEmail);
 }
 
-function loginWithGoogleGEPARU(){
+function loginWithGoogleGEPARU() {
   const redirectTo = location.href.split("#")[0];
+
   const url =
     SUPABASE_URL +
-    "/auth/v1/authorize?provider=google&redirect_to=" +
-    encodeURIComponent(redirectTo);
+    "/auth/v1/authorize?provider=google" +
+    "&redirect_to=" + encodeURIComponent(redirectTo) +
+    "&query_params=" + encodeURIComponent(
+      JSON.stringify({
+        prompt: "select_account"
+      })
+    );
+
   location.href = url;
 }
 
