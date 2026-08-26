@@ -2311,7 +2311,181 @@ document.querySelectorAll("th[data-sort]").forEach(th=>{
     render();
   });
 });
+/* =========================================================
+   AUTO KICK / AUTO LOGOUT DARI CORE ADIIMASA
+   ========================================================= */
 
+let coreAccessWatcher = null;
+let coreForceLogout = false;
+
+function startCoreAccessWatcher() {
+
+    if (coreAccessWatcher) {
+        clearInterval(coreAccessWatcher);
+    }
+
+    coreAccessWatcher = setInterval(async function () {
+
+        // Jangan cek kalau belum login
+        if (!currentAccessToken || !currentAdminEmail) {
+            return;
+        }
+
+        // Jangan jalankan pemeriksaan lagi setelah proses logout dimulai
+        if (coreForceLogout) {
+            return;
+        }
+
+        try {
+
+            const result = await getCoreAdiimasaApproval();
+
+            /* ---------------------------------------------
+               AKUN DIHAPUS / DI-KICK DARI CORE
+               --------------------------------------------- */
+
+            if (!result.exists) {
+
+                await forceLogoutByCore(
+                    "Akses akun Anda telah dicabut oleh Core Adiimasa."
+                );
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               CEK STATUS AKUN
+               --------------------------------------------- */
+
+            const status = String(
+                result.status || ""
+            ).trim().toUpperCase();
+
+            const isActive =
+                result.row &&
+                result.row.is_active === true;
+
+
+            /* ---------------------------------------------
+               SUSPEND / REJECTED / NONAKTIF
+               --------------------------------------------- */
+
+            if (
+                status === "SUSPENDED" ||
+                status === "REJECTED" ||
+                status !== "APPROVED" ||
+                !isActive
+            ) {
+
+                let pesan =
+                    "Akses Dashboard GEPARU Anda telah dicabut oleh Core Adiimasa.";
+
+                if (status === "SUSPENDED") {
+
+                    pesan =
+                        "Akun Dashboard GEPARU Anda telah ditangguhkan oleh Core Adiimasa.";
+
+                } else if (status === "REJECTED") {
+
+                    pesan =
+                        "Akun Dashboard GEPARU Anda telah ditolak oleh Core Adiimasa.";
+                }
+
+
+                await forceLogoutByCore(pesan);
+
+            }
+
+        } catch (error) {
+
+            /*
+             * Jika koneksi internet/database bermasalah,
+             * JANGAN langsung mengeluarkan akun.
+             */
+
+            console.warn(
+                "Pemeriksaan akses Core gagal sementara:",
+                error
+            );
+        }
+
+    }, 5000);
+}
+
+
+/* =========================================================
+   FUNGSI KELUAR OTOMATIS
+   ========================================================= */
+
+async function forceLogoutByCore(pesan) {
+
+    if (coreForceLogout) {
+        return;
+    }
+
+    coreForceLogout = true;
+
+
+    /* Hentikan pemeriksaan */
+
+    if (coreAccessWatcher) {
+
+        clearInterval(coreAccessWatcher);
+
+        coreAccessWatcher = null;
+    }
+
+
+    /* Logout dari Supabase */
+
+    try {
+
+        if (currentAccessToken) {
+
+            await fetch(
+                SUPABASE_URL + "/auth/v1/logout",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "apikey": SUPABASE_PUBLISHABLE_KEY,
+                        "Authorization":
+                            "Bearer " + currentAccessToken
+                    }
+                }
+            );
+        }
+
+    } catch (error) {
+        // Abaikan error logout server
+    }
+
+
+    /* Hapus session lokal */
+
+    clearAdminSession();
+
+
+    /* Beritahu user */
+
+    alert(
+        pesan +
+        "\n\nSilakan hubungi administrator Core Adiimasa."
+    );
+
+
+    /* Kembali ke halaman login */
+
+    location.reload();
+}
+
+
+/* =========================================================
+   MULAI PEMANTAUAN
+   ========================================================= */
+
+startCoreAccessWatcher();
 initAdminAuth().catch(e=>{
   console.error("Gagal menginisialisasi login admin:",e);
   showAdminLogin("Gagal menyiapkan login: "+(e?.message || String(e)),true);
