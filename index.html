@@ -2486,6 +2486,42 @@ async function forceLogoutByCore(pesan) {
    ========================================================= */
 
 startCoreAccessWatcher();
+  /* =====================================================
+   AUTO STOP VIDEO SAAT POPUP/REVIEW DITUTUP
+   ===================================================== */
+
+document.addEventListener("click", function(e){
+
+    // Jika klik langsung pada video, jangan hentikan video
+    if(e.target.closest("video")){
+        return;
+    }
+
+    // Semua video yang sedang berjalan dihentikan
+    document.querySelectorAll("video").forEach(video => {
+        try{
+            video.pause();
+            video.currentTime = 0;
+        }catch(err){}
+    });
+
+});
+
+
+/* Hentikan video jika halaman berpindah/ditinggalkan */
+document.addEventListener("visibilitychange", function(){
+
+    if(document.hidden){
+
+        document.querySelectorAll("video").forEach(video => {
+            try{
+                video.pause();
+            }catch(err){}
+        });
+
+    }
+
+});
 initAdminAuth().catch(e=>{
   console.error("Gagal menginisialisasi login admin:",e);
   showAdminLogin("Gagal menyiapkan login: "+(e?.message || String(e)),true);
