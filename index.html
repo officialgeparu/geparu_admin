@@ -5287,6 +5287,104 @@ window.GEPARU_BERITA = {
 };
 
 })();
+<style>
+/* FIX FILE PICKER GEPARU ANDROID */
+.gb-upload-label{
+  position:relative;
+  cursor:pointer !important;
+}
 
+.gb-upload-label input[type="file"]{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  opacity:0 !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+}
+</style>
+
+<script>
+(function(){
+
+  function fixGeparuFilePicker(){
+
+    const mainInput =
+      document.getElementById("gbMainPhoto");
+
+    const mediaInput =
+      document.getElementById("gbMediaInput");
+
+    if(mainInput){
+
+      const mainLabel =
+        mainInput.closest(".gb-upload-label");
+
+      if(mainLabel && !mainLabel.dataset.fileFix){
+
+        mainLabel.dataset.fileFix="1";
+
+        mainLabel.addEventListener("click",function(e){
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          mainInput.click();
+
+        });
+
+      }
+
+    }
+
+
+    if(mediaInput){
+
+      const mediaLabel =
+        mediaInput.closest(".gb-upload-label");
+
+      if(mediaLabel && !mediaLabel.dataset.fileFix){
+
+        mediaLabel.dataset.fileFix="1";
+
+        mediaLabel.addEventListener("click",function(e){
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          mediaInput.click();
+
+        });
+
+      }
+
+    }
+
+  }
+
+
+  /* Jalankan pertama kali */
+  fixGeparuFilePicker();
+
+
+  /* Karena modal dibuat dinamis */
+  const observer =
+    new MutationObserver(function(){
+
+      fixGeparuFilePicker();
+
+    });
+
+
+  observer.observe(
+    document.body,
+    {
+      childList:true,
+      subtree:true
+    }
+  );
+
+})();
+</script>
 </body>
 </html>
