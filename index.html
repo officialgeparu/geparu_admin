@@ -2532,129 +2532,116 @@ initAdminAuth().catch(e=>{
      V1.0
      Tempelkan seluruh blok ini di PALING BAWAH index.html
      ========================================================= -->
+<!-- =========================================================
+     GEPARU ADMIN — MODUL BERITA BARU
+     V2 CLEAN
+     Tempel tepat sebelum </body>
+     ========================================================= -->
 
 <style>
-/* =========================================================
-   GEPARU BERITA ADMIN — STYLE
-   ========================================================= */
+/* ================================
+   GEPARU BERITA
+================================ */
 
 #geparuBeritaPanel{
   display:none;
-  margin-top:0;
+  padding:20px;
 }
 
-.gb-panel{
+.gb-wrap{
+  max-width:1200px;
+  margin:0 auto;
+}
+
+.gb-card{
   background:#fff;
-  border:1px solid #e7edf4;
+  border:1px solid #e5eaf0;
   border-radius:18px;
-  box-shadow:0 8px 30px rgba(30,55,90,.06);
+  box-shadow:0 8px 30px rgba(20,45,70,.07);
   overflow:hidden;
 }
 
-.gb-head{
+.gb-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:15px;
-  padding:20px 22px;
+  padding:22px;
   border-bottom:1px solid #edf1f5;
 }
 
-.gb-head h2{
+.gb-title{
   margin:0;
-  font-size:20px;
   color:#17324d;
+  font-size:21px;
+  font-weight:800;
 }
 
-.gb-head p{
-  margin:5px 0 0;
+.gb-subtitle{
+  margin:6px 0 0;
   color:#718096;
   font-size:13px;
 }
 
-.gb-primary{
+.gb-btn{
   border:0;
   border-radius:10px;
   padding:11px 16px;
-  background:#1769aa;
-  color:#fff;
-  font-weight:700;
   cursor:pointer;
+  font-weight:700;
   font-size:13px;
 }
 
-.gb-primary:hover{
-  opacity:.92;
+.gb-btn-primary{
+  background:#1769aa;
+  color:#fff;
 }
 
-.gb-secondary{
-  border:1px solid #dce5ee;
-  border-radius:10px;
-  padding:10px 15px;
-  background:#fff;
-  color:#34495e;
-  font-weight:600;
-  cursor:pointer;
+.gb-btn-secondary{
+  background:#eef3f8;
+  color:#345;
 }
 
-.gb-danger{
-  border:0;
-  border-radius:8px;
-  padding:7px 10px;
+.gb-btn-danger{
   background:#fff0f0;
   color:#c0392b;
-  font-weight:700;
-  cursor:pointer;
 }
 
-.gb-tools{
+.gb-toolbar{
   display:flex;
   gap:10px;
-  padding:16px 22px;
+  padding:15px 22px;
   background:#fafcff;
   border-bottom:1px solid #edf1f5;
-  flex-wrap:wrap;
 }
 
-.gb-tools input,
-.gb-tools select{
+.gb-search{
+  flex:1;
+  min-width:180px;
   height:40px;
   border:1px solid #dce5ee;
   border-radius:9px;
   padding:0 12px;
-  background:#fff;
-  outline:none;
-  font-size:13px;
-}
-
-.gb-tools input{
-  min-width:240px;
-  flex:1;
-}
-
-.gb-tools select{
-  min-width:145px;
+  box-sizing:border-box;
 }
 
 .gb-table-wrap{
-  width:100%;
   overflow-x:auto;
 }
 
 .gb-table{
   width:100%;
+  min-width:750px;
   border-collapse:collapse;
-  min-width:760px;
 }
 
 .gb-table th{
-  text-align:left;
   padding:13px 16px;
+  text-align:left;
   background:#f7faff;
-  color:#61748a;
+  color:#65778b;
   font-size:11px;
   text-transform:uppercase;
-  letter-spacing:.4px;
 }
 
 .gb-table td{
@@ -2662,49 +2649,35 @@ initAdminAuth().catch(e=>{
   border-top:1px solid #edf1f5;
   color:#334e68;
   font-size:13px;
-  vertical-align:middle;
 }
 
 .gb-thumb{
-  width:64px;
+  width:65px;
   height:48px;
   object-fit:cover;
   border-radius:8px;
-  background:#eef3f8;
-  display:block;
-}
-
-.gb-title{
-  font-weight:700;
-  color:#193b5b;
-  max-width:310px;
-}
-
-.gb-date{
-  color:#718096;
-  font-size:12px;
+  background:#edf2f7;
 }
 
 .gb-status{
-  display:inline-flex;
-  align-items:center;
+  display:inline-block;
   padding:5px 9px;
   border-radius:20px;
   font-size:11px;
   font-weight:800;
 }
 
-.gb-status.DRAFT{
-  background:#fff6df;
-  color:#a66b00;
+.gb-status-draft{
+  background:#fff5dc;
+  color:#9a6500;
 }
 
-.gb-status.TERBIT{
-  background:#e8f8ef;
-  color:#167346;
+.gb-status-terbit{
+  background:#e7f8ed;
+  color:#187342;
 }
 
-.gb-status.ARSIP{
+.gb-status-arsip{
   background:#edf1f5;
   color:#637386;
 }
@@ -2715,57 +2688,40 @@ initAdminAuth().catch(e=>{
   flex-wrap:wrap;
 }
 
-.gb-action{
-  border:1px solid #dce5ee;
-  background:#fff;
-  border-radius:7px;
-  padding:6px 9px;
-  font-size:11px;
-  font-weight:700;
-  cursor:pointer;
-  color:#345;
-}
-
-.gb-action:hover{
-  background:#f5f9fd;
-}
-
 .gb-empty{
-  padding:50px 20px;
   text-align:center;
+  padding:50px 20px;
   color:#8091a5;
 }
 
-.gb-empty-icon{
-  font-size:38px;
-  margin-bottom:8px;
-}
+/* ================================
+   MODAL
+================================ */
 
-.gb-modal{
+#gbModal{
   position:fixed;
   inset:0;
-  z-index:99999;
+  z-index:999999;
   display:none;
   align-items:center;
   justify-content:center;
-  padding:20px;
-  background:rgba(10,27,45,.55);
+  padding:15px;
+  background:rgba(10,25,40,.55);
 }
 
-.gb-modal.show{
+#gbModal.gb-show{
   display:flex;
 }
 
 .gb-modal-box{
   width:min(850px,100%);
-  max-height:92vh;
+  max-height:94vh;
   overflow:auto;
   background:#fff;
   border-radius:18px;
-  box-shadow:0 25px 70px rgba(0,0,0,.25);
 }
 
-.gb-modal-head{
+.gb-modal-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -2774,10 +2730,10 @@ initAdminAuth().catch(e=>{
   position:sticky;
   top:0;
   background:#fff;
-  z-index:2;
+  z-index:5;
 }
 
-.gb-modal-head h3{
+.gb-modal-header h3{
   margin:0;
   color:#17324d;
 }
@@ -2787,10 +2743,9 @@ initAdminAuth().catch(e=>{
   height:34px;
   border:0;
   border-radius:50%;
-  background:#f1f4f7;
+  background:#f0f3f6;
   cursor:pointer;
   font-size:20px;
-  color:#526579;
 }
 
 .gb-form{
@@ -2798,87 +2753,82 @@ initAdminAuth().catch(e=>{
 }
 
 .gb-field{
-  margin-bottom:17px;
+  margin-bottom:18px;
 }
 
 .gb-field label{
   display:block;
   margin-bottom:7px;
   color:#334e68;
-  font-weight:700;
   font-size:13px;
+  font-weight:700;
 }
 
-.gb-field input,
-.gb-field textarea,
-.gb-field select{
+.gb-input,
+.gb-textarea,
+.gb-select{
   width:100%;
   box-sizing:border-box;
   border:1px solid #d8e2ec;
   border-radius:10px;
   padding:11px 12px;
-  outline:none;
   font-family:inherit;
   font-size:13px;
-  color:#263d52;
+  outline:none;
   background:#fff;
 }
 
-.gb-field textarea{
+.gb-textarea{
   min-height:180px;
   resize:vertical;
 }
 
-.gb-field input:focus,
-.gb-field textarea:focus,
-.gb-field select:focus{
-  border-color:#4a90c2;
-  box-shadow:0 0 0 3px rgba(74,144,194,.08);
-}
-
-.gb-help{
-  margin-top:5px;
-  color:#8495a8;
-  font-size:11px;
-}
-
-.gb-upload-box{
+.gb-upload{
   border:1.5px dashed #bfd0e0;
   border-radius:12px;
   padding:16px;
   background:#f9fbfd;
 }
 
-.gb-upload-label{
+.gb-file-button{
   display:inline-flex;
   align-items:center;
   gap:7px;
-  padding:9px 13px;
-  border-radius:9px;
+  padding:10px 14px;
   background:#eaf3fb;
   color:#1769aa;
+  border-radius:9px;
   font-weight:700;
   font-size:12px;
   cursor:pointer;
 }
 
-.gb-upload-label input{
+.gb-file-button input{
   display:none;
 }
 
-.gb-file-list{
+.gb-preview{
+  display:none;
+  margin-top:12px;
+  width:180px;
+  height:120px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.gb-files{
   margin-top:12px;
   display:grid;
   gap:7px;
 }
 
-.gb-file-item{
+.gb-file{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:10px;
   padding:9px 10px;
-  border:1px solid #e2e9f0;
+  border:1px solid #e1e8ef;
   border-radius:8px;
   background:#fff;
   font-size:12px;
@@ -2890,220 +2840,119 @@ initAdminAuth().catch(e=>{
   white-space:nowrap;
 }
 
-.gb-file-remove{
+.gb-remove-file{
   border:0;
+  border-radius:6px;
+  padding:4px 7px;
   background:#fff0f0;
   color:#c0392b;
-  border-radius:6px;
   cursor:pointer;
-  padding:4px 7px;
-  font-weight:700;
 }
 
-.gb-preview-main{
-  margin-top:10px;
-  max-width:220px;
-  max-height:140px;
-  border-radius:10px;
-  object-fit:cover;
-  display:none;
-}
-
-.gb-modal-actions{
+.gb-modal-footer{
   display:flex;
   justify-content:flex-end;
   gap:9px;
-  padding:17px 22px;
+  padding:16px 22px;
   border-top:1px solid #edf1f5;
   position:sticky;
   bottom:0;
   background:#fff;
 }
 
-.gb-progress{
+.gb-message{
   display:none;
   margin-top:12px;
-}
-
-.gb-progress-bar{
-  width:100%;
-  height:8px;
-  background:#e8eef4;
-  border-radius:20px;
-  overflow:hidden;
-}
-
-.gb-progress-inner{
-  width:0%;
-  height:100%;
-  background:#1769aa;
-  transition:width .2s;
-}
-
-.gb-message{
-  margin-top:10px;
   padding:10px 12px;
   border-radius:8px;
-  display:none;
   font-size:12px;
 }
 
-.gb-message.success{
+.gb-message.show{
   display:block;
-  background:#eaf8ef;
-  color:#167346;
 }
 
 .gb-message.error{
-  display:block;
   background:#fff0f0;
   color:#b42318;
 }
 
-.gb-media-preview{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
-  gap:10px;
-  margin-top:12px;
+.gb-message.success{
+  background:#eaf8ef;
+  color:#167346;
 }
 
-.gb-media-card{
-  border:1px solid #e0e7ee;
-  border-radius:9px;
-  overflow:hidden;
-  background:#fff;
-}
-
-.gb-media-card img,
-.gb-media-card video{
-  width:100%;
-  height:90px;
-  object-fit:cover;
-  display:block;
-}
-
-.gb-media-info{
-  padding:7px;
-  font-size:10px;
-  color:#61748a;
-  word-break:break-word;
-}
-
-.gb-loading{
-  text-align:center;
-  padding:30px;
-  color:#718096;
-}
-
-.gb-detail{
-  display:none;
-}
-
-.gb-detail.show{
-  display:block;
-}
-
-.gb-back{
-  margin-bottom:12px;
-}
-
-/* Mobile */
 @media(max-width:700px){
 
-  .gb-head{
-    align-items:flex-start;
-    flex-direction:column;
+  #geparuBeritaPanel{
+    padding:10px;
   }
 
-  .gb-primary{
+  .gb-header{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .gb-btn-primary{
     width:100%;
   }
 
-  .gb-tools{
+  .gb-toolbar{
     flex-direction:column;
-  }
-
-  .gb-tools input,
-  .gb-tools select{
-    width:100%;
-    min-width:0;
-  }
-
-  .gb-modal{
-    padding:8px;
   }
 
   .gb-modal-box{
     max-height:96vh;
-    border-radius:14px;
   }
 
   .gb-form{
     padding:16px;
   }
 
-  .gb-modal-actions{
+  .gb-modal-footer{
     padding:13px 16px;
   }
 
-  .gb-modal-actions button{
+  .gb-modal-footer .gb-btn{
     flex:1;
   }
 }
 </style>
 
 
-<!-- =========================================================
-     MENU BERITA + PANEL
-     ========================================================= -->
-
 <script>
 (function(){
 
 "use strict";
 
-/* ---------------------------------------------------------
+/* =========================================================
    KONFIGURASI
-   --------------------------------------------------------- */
+========================================================= */
 
-const GB_SUPABASE_URL =
-  (typeof SUPABASE_URL !== "undefined")
-    ? SUPABASE_URL
-    : "https://fysaxpqpqexjnlpkbwap.supabase.co";
+const GB_URL =
+  "https://fysaxpqpqexjnlpkbwap.supabase.co";
 
-const GB_PUBLISHABLE_KEY =
+const GB_KEY =
   (typeof SUPABASE_PUBLISHABLE_KEY !== "undefined")
-    ? SUPABASE_PUBLISHABLE_KEY
-    : "";
+  ? SUPABASE_PUBLISHABLE_KEY
+  : "";
 
 const GB_BUCKET = "geparu-berita";
 
-const GB_BERITA_URL =
-  GB_SUPABASE_URL + "/rest/v1/berita";
 
-const GB_MEDIA_URL =
-  GB_SUPABASE_URL + "/rest/v1/berita_media";
-
-const GB_STORAGE_URL =
-  GB_SUPABASE_URL + "/storage/v1/object/" + GB_BUCKET;
-
-
-/* ---------------------------------------------------------
+/* =========================================================
    STATE
-   --------------------------------------------------------- */
+========================================================= */
 
-let gbCurrentId = null;
-let gbMainPhotoFile = null;
+let gbMainPhoto = null;
 let gbMediaFiles = [];
-let gbEditing = false;
 
 
-/* ---------------------------------------------------------
-   AUTH HEADER
-   Menggunakan token login admin yang sudah ada.
-   --------------------------------------------------------- */
+/* =========================================================
+   TOKEN
+========================================================= */
 
-function gbAuthHeaders(extra={}){
+function gbHeaders(extra){
 
   let token = "";
 
@@ -3114,229 +2963,243 @@ function gbAuthHeaders(extra={}){
   }catch(e){}
 
   return Object.assign({
-    "apikey": GB_PUBLISHABLE_KEY,
-    "Authorization": "Bearer " + token,
-    "Accept": "application/json"
-  },extra);
+    "apikey":GB_KEY,
+    "Authorization":"Bearer "+token,
+    "Accept":"application/json"
+  },extra || {});
 }
 
 
-/* ---------------------------------------------------------
-   CEK SESSION
-   --------------------------------------------------------- */
-
-function gbIsLoggedIn(){
-
-  try{
-    if(typeof currentAccessToken !== "undefined"){
-      return !!currentAccessToken;
-    }
-  }catch(e){}
-
-  return false;
-}
-
-
-/* ---------------------------------------------------------
+/* =========================================================
    BUAT MENU BERITA
-   --------------------------------------------------------- */
+========================================================= */
 
-function gbCreateMenu(){
+function gbMakeMenu(){
 
-  const nav = document.querySelector(".nav");
+  const nav =
+    document.querySelector(".nav");
 
   if(!nav) return;
 
-  if(document.getElementById("navBerita")) return;
+  if(document.getElementById("gbBeritaMenu")){
+    return;
+  }
 
-  const btn = document.createElement("button");
+  const btn =
+    document.createElement("button");
 
-  btn.type = "button";
-  btn.id = "navBerita";
-  btn.innerHTML = "📰 &nbsp; Berita";
+  btn.type="button";
 
-  nav.insertBefore(
-    btn,
-    document.getElementById("navPetugas") || null
+  btn.id="gbBeritaMenu";
+
+  btn.innerHTML="📰 &nbsp; Berita";
+
+  btn.style.cursor="pointer";
+
+  btn.addEventListener(
+    "click",
+    gbOpenPanel
   );
 
-  btn.addEventListener("click",function(){
+  const petugas =
+    document.getElementById("navPetugas");
 
-    gbShowPanel();
+  if(petugas){
 
-  });
+    nav.insertBefore(btn,petugas);
 
+  }else{
+
+    nav.appendChild(btn);
+
+  }
 }
 
 
-/* ---------------------------------------------------------
-   BUAT PANEL BERITA
-   --------------------------------------------------------- */
+/* =========================================================
+   BUAT PANEL
+========================================================= */
 
-function gbCreatePanel(){
+function gbMakePanel(){
 
-  if(document.getElementById("geparuBeritaPanel")) return;
+  if(document.getElementById(
+    "geparuBeritaPanel"
+  )){
+    return;
+  }
 
-  const main = document.querySelector("main.main");
+  const main =
+    document.querySelector("main.main");
 
   if(!main) return;
 
-  const section = document.createElement("section");
+  const panel =
+    document.createElement("section");
 
-  section.id = "geparuBeritaPanel";
+  panel.id="geparuBeritaPanel";
 
-  section.innerHTML = `
+  panel.innerHTML=`
 
-    <div class="gb-panel">
+    <div class="gb-wrap">
 
-      <div class="gb-head">
+      <div class="gb-card">
 
-        <div>
-          <h2>📰 Berita GEPARU</h2>
-          <p>Kelola berita, foto, video dan dokumen untuk website warga.</p>
+        <div class="gb-header">
+
+          <div>
+
+            <h2 class="gb-title">
+              📰 Berita GEPARU
+            </h2>
+
+            <p class="gb-subtitle">
+              Kelola berita yang tampil pada website warga.
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            id="gbAddButton"
+            class="gb-btn gb-btn-primary">
+
+            + Tambah Berita
+
+          </button>
+
         </div>
 
-        <button
-          type="button"
-          class="gb-primary"
-          id="gbTambahBtn">
-          + Tambah Berita
-        </button>
 
-      </div>
+        <div class="gb-toolbar">
 
-      <div class="gb-tools">
+          <input
+            type="search"
+            id="gbSearch"
+            class="gb-search"
+            placeholder="Cari berita...">
 
-        <input
-          type="search"
-          id="gbSearch"
-          placeholder="Cari judul berita...">
+          <button
+            type="button"
+            id="gbRefresh"
+            class="gb-btn gb-btn-secondary">
 
-        <select id="gbStatusFilter">
+            ↻ Refresh
 
-          <option value="">Semua Status</option>
-          <option value="DRAFT">Draft</option>
-          <option value="TERBIT">Terbit</option>
-          <option value="ARSIP">Arsip</option>
+          </button>
 
-        </select>
+        </div>
 
-        <button
-          type="button"
-          class="gb-secondary"
-          id="gbRefreshBtn">
-          ↻ Refresh
-        </button>
 
-      </div>
+        <div class="gb-table-wrap">
 
-      <div class="gb-table-wrap">
+          <table class="gb-table">
 
-        <table class="gb-table">
+            <thead>
 
-          <thead>
+              <tr>
 
-            <tr>
-              <th>Foto</th>
-              <th>Judul Berita</th>
-              <th>Tanggal</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
+                <th>Foto</th>
 
-          </thead>
+                <th>Judul</th>
 
-          <tbody id="gbTableBody">
+                <th>Tanggal</th>
 
-            <tr>
-              <td colspan="5">
-                <div class="gb-loading">
-                  Memuat berita...
-                </div>
-              </td>
-            </tr>
+                <th>Status</th>
 
-          </tbody>
+                <th>Aksi</th>
 
-        </table>
+              </tr>
+
+            </thead>
+
+            <tbody id="gbRows">
+
+              <tr>
+
+                <td colspan="5">
+
+                  <div class="gb-empty">
+                    Memuat berita...
+                  </div>
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
 
       </div>
 
     </div>
   `;
 
-  main.appendChild(section);
+  main.appendChild(panel);
 
   document
-    .getElementById("gbTambahBtn")
-    .addEventListener("click",function(){
-
-      gbOpenModal();
-
-    });
+    .getElementById("gbAddButton")
+    .addEventListener(
+      "click",
+      gbOpenModal
+    );
 
   document
-    .getElementById("gbRefreshBtn")
-    .addEventListener("click",function(){
-
-      gbLoadBerita();
-
-    });
+    .getElementById("gbRefresh")
+    .addEventListener(
+      "click",
+      gbLoad
+    );
 
   document
     .getElementById("gbSearch")
-    .addEventListener("input",function(){
-
-      gbLoadBerita();
-
-    });
-
-  document
-    .getElementById("gbStatusFilter")
-    .addEventListener("change",function(){
-
-      gbLoadBerita();
-
-    });
-
+    .addEventListener(
+      "input",
+      gbLoad
+    );
 }
 
 
-/* ---------------------------------------------------------
-   MODAL FORM
-   --------------------------------------------------------- */
+/* =========================================================
+   MODAL
+========================================================= */
 
-function gbCreateModal(){
+function gbMakeModal(){
 
-  if(document.getElementById("gbModal")) return;
+  if(document.getElementById("gbModal")){
+    return;
+  }
 
-  const modal = document.createElement("div");
+  const modal =
+    document.createElement("div");
 
-  modal.id = "gbModal";
-  modal.className = "gb-modal";
+  modal.id="gbModal";
 
-  modal.innerHTML = `
+  modal.innerHTML=`
 
     <div class="gb-modal-box">
 
-      <div class="gb-modal-head">
+      <div class="gb-modal-header">
 
-        <h3 id="gbModalTitle">
+        <h3>
           Tambah Berita
         </h3>
 
         <button
           type="button"
           class="gb-close"
-          id="gbCloseModal">
+          id="gbClose">
+
           ×
+
         </button>
 
       </div>
 
-      <form
-        class="gb-form"
-        id="gbForm">
+
+      <div class="gb-form">
 
         <div class="gb-field">
 
@@ -3346,7 +3209,8 @@ function gbCreateModal(){
 
           <input
             id="gbJudul"
-            required
+            class="gb-input"
+            type="text"
             maxlength="200"
             placeholder="Masukkan judul berita">
 
@@ -3361,7 +3225,8 @@ function gbCreateModal(){
 
           <textarea
             id="gbIsi"
-            placeholder="Tulis isi berita di sini..."></textarea>
+            class="gb-textarea"
+            placeholder="Tulis isi berita..."></textarea>
 
         </div>
 
@@ -3369,10 +3234,12 @@ function gbCreateModal(){
         <div class="gb-field">
 
           <label>
-            Status *
+            Status
           </label>
 
-          <select id="gbStatus">
+          <select
+            id="gbStatus"
+            class="gb-select">
 
             <option value="DRAFT">
               Draft
@@ -3397,26 +3264,22 @@ function gbCreateModal(){
             Foto Utama
           </label>
 
-          <div class="gb-upload-box">
+          <div class="gb-upload">
 
-            <label class="gb-upload-label">
+            <label class="gb-file-button">
 
               📷 Pilih Foto Utama
 
               <input
                 type="file"
-                id="gbMainPhoto"
+                id="gbMainPhotoInput"
                 accept="image/*">
 
             </label>
 
-            <div class="gb-help">
-              Maksimal 10 MB. Format JPG, PNG, WEBP.
-            </div>
-
             <img
-              id="gbMainPreview"
-              class="gb-preview-main">
+              id="gbPreview"
+              class="gb-preview">
 
           </div>
 
@@ -3429,9 +3292,9 @@ function gbCreateModal(){
             Media Berita
           </label>
 
-          <div class="gb-upload-box">
+          <div class="gb-upload">
 
-            <label class="gb-upload-label">
+            <label class="gb-file-button">
 
               📁 Pilih Foto / Video / Dokumen
 
@@ -3443,31 +3306,9 @@ function gbCreateModal(){
 
             </label>
 
-            <div class="gb-help">
-              Foto maksimal 10 MB/file.
-              Video maksimal 100 MB/file.
-              Dokumen maksimal 20 MB/file.
-            </div>
-
             <div
-              id="gbFileList"
-              class="gb-file-list">
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div
-          id="gbProgress"
-          class="gb-progress">
-
-          <div class="gb-progress-bar">
-
-            <div
-              id="gbProgressInner"
-              class="gb-progress-inner">
+              id="gbFiles"
+              class="gb-files">
             </div>
 
           </div>
@@ -3480,23 +3321,27 @@ function gbCreateModal(){
           class="gb-message">
         </div>
 
-      </form>
+      </div>
 
 
-      <div class="gb-modal-actions">
+      <div class="gb-modal-footer">
 
         <button
           type="button"
-          class="gb-secondary"
-          id="gbCancelBtn">
+          id="gbCancel"
+          class="gb-btn gb-btn-secondary">
+
           Batal
+
         </button>
 
         <button
           type="button"
-          class="gb-primary"
-          id="gbSaveBtn">
+          id="gbSave"
+          class="gb-btn gb-btn-primary">
+
           Simpan Berita
+
         </button>
 
       </div>
@@ -3508,1454 +3353,202 @@ function gbCreateModal(){
 
 
   document
-    .getElementById("gbCloseModal")
-    .addEventListener("click",gbCloseModal);
+    .getElementById("gbClose")
+    .addEventListener(
+      "click",
+      gbCloseModal
+    );
 
 
   document
-    .getElementById("gbCancelBtn")
-    .addEventListener("click",gbCloseModal);
+    .getElementById("gbCancel")
+    .addEventListener(
+      "click",
+      gbCloseModal
+    );
 
 
   document
-    .getElementById("gbSaveBtn")
-    .addEventListener("click",gbSaveBerita);
+    .getElementById("gbSave")
+    .addEventListener(
+      "click",
+      gbSave
+    );
 
+
+  /*
+   * FOTO UTAMA
+   */
 
   document
-    .getElementById("gbMainPhoto")
-    .addEventListener("change",function(e){
+    .getElementById("gbMainPhotoInput")
+    .addEventListener(
+      "change",
+      function(){
 
-      const file = e.target.files[0];
+        gbMainPhoto =
+          this.files &&
+          this.files[0]
+          ? this.files[0]
+          : null;
 
-      gbMainPhotoFile = file || null;
+        const preview =
+          document.getElementById(
+            "gbPreview"
+          );
 
-      const preview =
-        document.getElementById("gbMainPreview");
+        if(!gbMainPhoto){
 
-      if(!file){
+          preview.style.display="none";
 
-        preview.style.display="none";
-        preview.removeAttribute("src");
-        return;
+          return;
+        }
 
+        if(
+          gbMainPhoto.size >
+          10 * 1024 * 1024
+        ){
+
+          alert(
+            "Foto utama maksimal 10 MB."
+          );
+
+          this.value="";
+
+          gbMainPhoto=null;
+
+          return;
+        }
+
+        preview.src =
+          URL.createObjectURL(
+            gbMainPhoto
+          );
+
+        preview.style.display="block";
       }
+    );
 
-      if(file.size > 10 * 1024 * 1024){
 
-        alert("Foto utama maksimal 10 MB.");
-
-        e.target.value="";
-        gbMainPhotoFile=null;
-
-        preview.style.display="none";
-
-        return;
-
-      }
-
-      preview.src =
-        URL.createObjectURL(file);
-
-      preview.style.display="block";
-
-    });
-
+  /*
+   * MEDIA
+   */
 
   document
     .getElementById("gbMediaInput")
-    .addEventListener("change",function(e){
+    .addEventListener(
+      "change",
+      function(){
 
-      const files =
-        Array.from(e.target.files || []);
+        const files =
+          Array.from(
+            this.files || []
+          );
 
-      files.forEach(function(file){
+        files.forEach(function(file){
 
-        if(
-          !gbMediaFiles.some(function(x){
-            return x.name === file.name &&
-                   x.size === file.size;
-          })
-        ){
+          if(
+            !gbMediaFiles.some(
+              function(existing){
 
-          gbMediaFiles.push(file);
+                return(
+                  existing.name === file.name &&
+                  existing.size === file.size
+                );
 
-        }
+              }
+            )
+          ){
 
-      });
+            gbMediaFiles.push(file);
 
-      gbRenderFileList();
+          }
 
-      e.target.value="";
+        });
 
-    });
+        gbRenderFiles();
 
+        this.value="";
+
+      }
+    );
 }
 
 
-/* ---------------------------------------------------------
-   RENDER FILE LIST
-   --------------------------------------------------------- */
+/* =========================================================
+   RENDER FILE
+========================================================= */
 
-function gbRenderFileList(){
+function gbRenderFiles(){
 
   const box =
-    document.getElementById("gbFileList");
+    document.getElementById(
+      "gbFiles"
+    );
 
   if(!box) return;
 
-  if(!gbMediaFiles.length){
-
-    box.innerHTML="";
-
-    return;
-
-  }
-
   box.innerHTML="";
 
-  gbMediaFiles.forEach(function(file,index){
+  gbMediaFiles.forEach(
+    function(file,index){
 
-    const item =
-      document.createElement("div");
+      const row =
+        document.createElement("div");
 
-    item.className="gb-file-item";
+      row.className="gb-file";
 
-    item.innerHTML=`
+      row.innerHTML=`
 
-      <div class="gb-file-name">
-        ${gbEscape(file.name)}
-      </div>
-
-      <div>
-        ${gbFormatSize(file.size)}
-      </div>
-
-      <button
-        type="button"
-        class="gb-file-remove"
-        data-index="${index}">
-        ×
-      </button>
-    `;
-
-    item
-      .querySelector(".gb-file-remove")
-      .addEventListener("click",function(){
-
-        gbMediaFiles.splice(index,1);
-
-        gbRenderFileList();
-
-      });
-
-    box.appendChild(item);
-
-  });
-
-}
-
-
-/* ---------------------------------------------------------
-   OPEN MODAL
-   --------------------------------------------------------- */
-
-function gbOpenModal(id=null){
-
-  gbEditing = !!id;
-  gbCurrentId = id || null;
-
-  gbMainPhotoFile=null;
-  gbMediaFiles=[];
-
-  const form =
-    document.getElementById("gbForm");
-
-  if(form) form.reset();
-
-  const preview =
-    document.getElementById("gbMainPreview");
-
-  if(preview){
-
-    preview.style.display="none";
-    preview.removeAttribute("src");
-
-  }
-
-  gbRenderFileList();
-
-  document
-    .getElementById("gbModalTitle")
-    .textContent =
-      id ? "Edit Berita" : "Tambah Berita";
-
-  document
-    .getElementById("gbSaveBtn")
-    .textContent =
-      id ? "Simpan Perubahan" : "Simpan Berita";
-
-  gbClearMessage();
-
-  document
-    .getElementById("gbModal")
-    .classList.add("show");
-
-
-  if(id){
-
-    gbLoadSingleBerita(id);
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   CLOSE MODAL
-   --------------------------------------------------------- */
-
-function gbCloseModal(){
-
-  const modal =
-    document.getElementById("gbModal");
-
-  if(modal){
-
-    modal.classList.remove("show");
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   LOAD BERITA
-   --------------------------------------------------------- */
-
-async function gbLoadBerita(){
-
-  const tbody =
-    document.getElementById("gbTableBody");
-
-  if(!tbody) return;
-
-  tbody.innerHTML=`
-
-    <tr>
-      <td colspan="5">
-        <div class="gb-loading">
-          Memuat berita...
-        </div>
-      </td>
-    </tr>
-  `;
-
-  try{
-
-    const search =
-      String(
-        document.getElementById("gbSearch")?.value || ""
-      ).trim();
-
-    const status =
-      String(
-        document.getElementById("gbStatusFilter")?.value || ""
-      );
-
-    let url =
-      GB_BERITA_URL +
-      "?select=*&order=created_at.desc";
-
-    if(status){
-
-      url +=
-        "&status=eq." +
-        encodeURIComponent(status);
-
-    }
-
-    if(search){
-
-      url +=
-        "&judul=ilike.*" +
-        encodeURIComponent(search) +
-        "*";
-
-    }
-
-    const res =
-      await fetch(
-        url,
-        {
-          headers:gbAuthHeaders(),
-          cache:"no-store"
-        }
-      );
-
-    if(!res.ok){
-
-      throw new Error(
-        await res.text() ||
-        "Gagal mengambil data berita."
-      );
-
-    }
-
-    const data =
-      await res.json();
-
-    gbRenderTable(
-      Array.isArray(data) ? data : []
-    );
-
-  }catch(err){
-
-    tbody.innerHTML=`
-
-      <tr>
-        <td colspan="5">
-
-          <div class="gb-empty">
-
-            <div class="gb-empty-icon">
-              ⚠️
-            </div>
-
-            Gagal memuat berita.<br>
-
-            <small>
-              ${gbEscape(err.message)}
-            </small>
-
-          </div>
-
-        </td>
-      </tr>
-    `;
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   RENDER TABLE
-   --------------------------------------------------------- */
-
-function gbRenderTable(data){
-
-  const tbody =
-    document.getElementById("gbTableBody");
-
-  if(!tbody) return;
-
-  if(!data.length){
-
-    tbody.innerHTML=`
-
-      <tr>
-        <td colspan="5">
-
-          <div class="gb-empty">
-
-            <div class="gb-empty-icon">
-              📰
-            </div>
-
-            Belum ada berita.
-
-          </div>
-
-        </td>
-      </tr>
-    `;
-
-    return;
-
-  }
-
-  tbody.innerHTML="";
-
-  data.forEach(function(item){
-
-    const tr =
-      document.createElement("tr");
-
-    let foto="";
-
-    if(item.foto_utama){
-
-      foto =
-        item.foto_utama;
-
-    }
-
-    const date =
-      item.tanggal_terbit ||
-      item.created_at;
-
-    tr.innerHTML=`
-
-      <td>
-
-        ${
-          foto
-          ?
-          `<img
-             class="gb-thumb"
-             src="${gbEscapeAttr(foto)}"
-             alt="">`
-          :
-          `<div
-             class="gb-thumb"
-             style="
-               display:flex;
-               align-items:center;
-               justify-content:center;
-               font-size:20px;
-             ">
-             📰
-           </div>`
-        }
-
-      </td>
-
-      <td>
-
-        <div class="gb-title">
-          ${gbEscape(item.judul || "-")}
-        </div>
-
-      </td>
-
-      <td>
-
-        <div class="gb-date">
-          ${gbFormatDate(date)}
-        </div>
-
-      </td>
-
-      <td>
-
-        <span
-          class="gb-status ${gbEscapeAttr(item.status)}">
-          ${gbEscape(item.status || "-")}
+        <span class="gb-file-name">
+          ${gbEscape(file.name)}
         </span>
 
-      </td>
-
-      <td>
-
-        <div class="gb-actions">
-
-          <button
-            type="button"
-            class="gb-action"
-            data-edit="${gbEscapeAttr(item.id)}">
-            Edit
-          </button>
-
-          <button
-            type="button"
-            class="gb-action"
-            data-preview="${gbEscapeAttr(item.id)}">
-            Media
-          </button>
-
-          <button
-            type="button"
-            class="gb-danger"
-            data-delete="${gbEscapeAttr(item.id)}">
-            Hapus
-          </button>
-
-        </div>
-
-      </td>
-    `;
-
-
-    const edit =
-      tr.querySelector("[data-edit]");
-
-    const preview =
-      tr.querySelector("[data-preview]");
-
-    const del =
-      tr.querySelector("[data-delete]");
-
-
-    edit.addEventListener("click",function(){
-
-      gbOpenModal(item.id);
-
-    });
-
-
-    preview.addEventListener("click",function(){
-
-      gbShowMedia(item.id);
-
-    });
-
-
-    del.addEventListener("click",function(){
-
-      gbDeleteBerita(item.id,item.judul);
-
-    });
-
-
-    tbody.appendChild(tr);
-
-  });
-
-}
-
-
-/* ---------------------------------------------------------
-   LOAD SINGLE
-   --------------------------------------------------------- */
-
-async function gbLoadSingleBerita(id){
-
-  try{
-
-    const res =
-      await fetch(
-        GB_BERITA_URL +
-        "?select=*&id=eq." +
-        encodeURIComponent(id) +
-        "&limit=1",
-        {
-          headers:gbAuthHeaders(),
-          cache:"no-store"
-        }
-      );
-
-    if(!res.ok){
-
-      throw new Error(
-        await res.text()
-      );
-
-    }
-
-    const data =
-      await res.json();
-
-    if(!data.length){
-
-      throw new Error(
-        "Berita tidak ditemukan."
-      );
-
-    }
-
-    const row=data[0];
-
-    document
-      .getElementById("gbJudul")
-      .value=row.judul || "";
-
-    document
-      .getElementById("gbIsi")
-      .value=row.isi || "";
-
-    document
-      .getElementById("gbStatus")
-      .value=row.status || "DRAFT";
-
-
-    if(row.foto_utama){
-
-      const preview =
-        document.getElementById("gbMainPreview");
-
-      preview.src=row.foto_utama;
-      preview.style.display="block";
-
-    }
-
-  }catch(err){
-
-    gbShowMessage(
-      err.message,
-      "error"
-    );
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   SAVE BERITA
-   --------------------------------------------------------- */
-
-async function gbSaveBerita(){
-
-  const saveBtn =
-    document.getElementById("gbSaveBtn");
-
-  const judul =
-    String(
-      document.getElementById("gbJudul").value || ""
-    ).trim();
-
-  const isi =
-    document.getElementById("gbIsi").value || "";
-
-  const status =
-    document.getElementById("gbStatus").value;
-
-
-  if(!judul){
-
-    gbShowMessage(
-      "Judul berita wajib diisi.",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  if(!gbIsLoggedIn()){
-
-    gbShowMessage(
-      "Sesi admin tidak ditemukan. Silakan login kembali.",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  saveBtn.disabled=true;
-  saveBtn.textContent="Menyimpan...";
-
-  gbShowProgress(5);
-
-  try{
-
-    let fotoUtama=null;
-
-
-    /* -----------------------------------------------------
-       UPLOAD FOTO UTAMA
-       ----------------------------------------------------- */
-
-    if(gbMainPhotoFile){
-
-      gbValidateFile(
-        gbMainPhotoFile,
-        "FOTO"
-      );
-
-      fotoUtama =
-        await gbUploadFile(
-          gbMainPhotoFile,
-          "foto"
-        );
-
-      gbShowProgress(30);
-
-    }
-
-
-    /* -----------------------------------------------------
-       SLUG
-       ----------------------------------------------------- */
-
-    const slugBase =
-      gbSlugify(judul);
-
-    const slug =
-      await gbMakeUniqueSlug(
-        slugBase,
-        gbCurrentId
-      );
-
-
-    /* -----------------------------------------------------
-       DATA BERITA
-       ----------------------------------------------------- */
-
-    const body={
-
-      judul:judul,
-      slug:slug,
-      isi:isi,
-      status:status,
-      updated_at:new Date().toISOString()
-
-    };
-
-
-    if(status==="TERBIT"){
-
-      body.tanggal_terbit =
-        new Date().toISOString();
-
-    }
-
-
-    if(fotoUtama){
-
-      body.foto_utama=fotoUtama;
-
-    }
-
-
-    let beritaId =
-      gbCurrentId;
-
-
-    /* -----------------------------------------------------
-       INSERT / UPDATE
-       ----------------------------------------------------- */
-
-    if(gbEditing && gbCurrentId){
-
-      const res =
-        await fetch(
-          GB_BERITA_URL +
-          "?id=eq." +
-          encodeURIComponent(gbCurrentId),
-          {
-            method:"PATCH",
-            headers:gbAuthHeaders({
-              "Content-Type":"application/json",
-              "Prefer":"return=representation"
-            }),
-            body:JSON.stringify(body)
-          }
-        );
-
-      if(!res.ok){
-
-        throw new Error(
-          await res.text() ||
-          "Gagal memperbarui berita."
-        );
-
-      }
-
-    }else{
-
-      body.created_by=null;
-
-      const res =
-        await fetch(
-          GB_BERITA_URL,
-          {
-            method:"POST",
-            headers:gbAuthHeaders({
-              "Content-Type":"application/json",
-              "Prefer":"return=representation"
-            }),
-            body:JSON.stringify(body)
-          }
-        );
-
-      if(!res.ok){
-
-        throw new Error(
-          await res.text() ||
-          "Gagal membuat berita."
-        );
-
-      }
-
-      const created =
-        await res.json();
-
-      beritaId =
-        Array.isArray(created)
-        ? created[0]?.id
-        : created?.id;
-
-    }
-
-
-    gbShowProgress(55);
-
-
-    /* -----------------------------------------------------
-       UPLOAD MEDIA TAMBAHAN
-       ----------------------------------------------------- */
-
-    if(
-      beritaId &&
-      gbMediaFiles.length
-    ){
-
-      for(
-        let i=0;
-        i<gbMediaFiles.length;
-        i++
-      ){
-
-        const file =
-          gbMediaFiles[i];
-
-        const type =
-          gbDetectMediaType(file);
-
-        gbValidateFile(
-          file,
-          type
-        );
-
-        const fileUrl =
-          await gbUploadFile(
-            file,
-            type.toLowerCase()
-          );
-
-
-        const mediaBody={
-
-          berita_id:beritaId,
-          file_name:file.name,
-          file_url:fileUrl,
-          file_type:type,
-          mime_type:file.type || null,
-          file_size:file.size,
-          urutan:i
-
-        };
-
-
-        const mediaRes =
-          await fetch(
-            GB_MEDIA_URL,
-            {
-              method:"POST",
-              headers:gbAuthHeaders({
-                "Content-Type":"application/json",
-                "Prefer":"return=minimal"
-              }),
-              body:JSON.stringify(mediaBody)
-            }
-          );
-
-
-        if(!mediaRes.ok){
-
-          throw new Error(
-            await mediaRes.text() ||
-            "Gagal menyimpan data media."
-          );
-
-        }
-
-
-        gbShowProgress(
-          55 +
-          Math.round(
-            ((i+1)/gbMediaFiles.length)*40
-          )
-        );
-
-      }
-
-    }
-
-
-    gbShowProgress(100);
-
-    gbShowMessage(
-      status==="TERBIT"
-        ? "Berita berhasil diterbitkan."
-        : "Berita berhasil disimpan.",
-      "success"
-    );
-
-
-    setTimeout(function(){
-
-      gbCloseModal();
-      gbLoadBerita();
-
-    },700);
-
-
-  }catch(err){
-
-    gbShowMessage(
-      err.message || "Terjadi kesalahan.",
-      "error"
-    );
-
-  }finally{
-
-    saveBtn.disabled=false;
-
-    saveBtn.textContent =
-      gbEditing
-      ? "Simpan Perubahan"
-      : "Simpan Berita";
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   UPLOAD FILE KE SUPABASE STORAGE
-   --------------------------------------------------------- */
-
-async function gbUploadFile(file,folder){
-
-  const safeName =
-    gbSafeFileName(file.name);
-
-  const unique =
-    Date.now() +
-    "_" +
-    Math.random()
-      .toString(36)
-      .slice(2,8);
-
-  const path =
-    folder +
-    "/" +
-    unique +
-    "_" +
-    safeName;
-
-
-  const res =
-    await fetch(
-      GB_STORAGE_URL +
-      "/" +
-      path,
-      {
-        method:"POST",
-        headers:gbAuthHeaders({
-          "Content-Type":
-            file.type ||
-            "application/octet-stream",
-          "x-upsert":"false"
-        }),
-        body:file
-      }
-    );
-
-
-  if(!res.ok){
-
-    throw new Error(
-      await res.text() ||
-      "Upload file gagal."
-    );
-
-  }
-
-
-  return (
-    GB_SUPABASE_URL +
-    "/storage/v1/object/public/" +
-    GB_BUCKET +
-    "/" +
-    path
-  );
-
-}
-
-
-/* ---------------------------------------------------------
-   VALIDASI FILE
-   --------------------------------------------------------- */
-
-function gbValidateFile(file,type){
-
-  if(!file) return;
-
-
-  let max=10*1024*1024;
-
-  if(type==="VIDEO"){
-
-    max=100*1024*1024;
-
-  }
-
-  if(type==="DOKUMEN"){
-
-    max=20*1024*1024;
-
-  }
-
-
-  if(file.size > max){
-
-    throw new Error(
-      file.name +
-      " terlalu besar. Maksimal " +
-      gbFormatSize(max) +
-      "."
-    );
-
-  }
-
-
-  if(
-    type==="FOTO" &&
-    !file.type.startsWith("image/")
-  ){
-
-    throw new Error(
-      file.name +
-      " bukan file gambar."
-    );
-
-  }
-
-
-  if(
-    type==="VIDEO" &&
-    !file.type.startsWith("video/")
-  ){
-
-    throw new Error(
-      file.name +
-      " bukan file video."
-    );
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   DETEKSI TIPE MEDIA
-   --------------------------------------------------------- */
-
-function gbDetectMediaType(file){
-
-  if(
-    file.type &&
-    file.type.startsWith("image/")
-  ){
-
-    return "FOTO";
-
-  }
-
-  if(
-    file.type &&
-    file.type.startsWith("video/")
-  ){
-
-    return "VIDEO";
-
-  }
-
-  return "DOKUMEN";
-
-}
-
-
-/* ---------------------------------------------------------
-   UNIQUE SLUG
-   --------------------------------------------------------- */
-
-async function gbMakeUniqueSlug(base,currentId){
-
-  let slug=base || "berita";
-
-  let counter=0;
-
-  while(true){
-
-    let candidate =
-      counter
-      ? slug + "-" + counter
-      : slug;
-
-    const res =
-      await fetch(
-        GB_BERITA_URL +
-        "?select=id&slug=eq." +
-        encodeURIComponent(candidate) +
-        "&limit=1",
-        {
-          headers:gbAuthHeaders(),
-          cache:"no-store"
-        }
-      );
-
-    if(!res.ok){
-
-      return candidate;
-
-    }
-
-    const rows =
-      await res.json();
-
-    if(
-      !rows.length ||
-      (
-        currentId &&
-        rows[0].id===currentId
-      )
-    ){
-
-      return candidate;
-
-    }
-
-    counter++;
-
-    if(counter>100){
-
-      return (
-        slug +
-        "-" +
-        Date.now()
-      );
-
-    }
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   HAPUS BERITA
-   --------------------------------------------------------- */
-
-async function gbDeleteBerita(id,judul){
-
-  const yakin =
-    confirm(
-      "Hapus berita:\n\n" +
-      judul +
-      "\n\nBerita dan data medianya akan dihapus. Lanjutkan?"
-    );
-
-  if(!yakin) return;
-
-
-  try{
-
-    const res =
-      await fetch(
-        GB_BERITA_URL +
-        "?id=eq." +
-        encodeURIComponent(id),
-        {
-          method:"DELETE",
-          headers:gbAuthHeaders()
-        }
-      );
-
-
-    if(!res.ok){
-
-      throw new Error(
-        await res.text() ||
-        "Gagal menghapus berita."
-      );
-
-    }
-
-
-    await gbLoadBerita();
-
-
-  }catch(err){
-
-    alert(
-      "Gagal menghapus berita:\n" +
-      err.message
-    );
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   MEDIA VIEWER
-   --------------------------------------------------------- */
-
-async function gbShowMedia(id){
-
-  try{
-
-    const res =
-      await fetch(
-        GB_MEDIA_URL +
-        "?select=*&berita_id=eq." +
-        encodeURIComponent(id) +
-        "&order=urutan.asc",
-        {
-          headers:gbAuthHeaders(),
-          cache:"no-store"
-        }
-      );
-
-
-    if(!res.ok){
-
-      throw new Error(
-        await res.text()
-      );
-
-    }
-
-
-    const data =
-      await res.json();
-
-
-    let html="";
-
-
-    if(!data.length){
-
-      html=`
-
-        <div class="gb-empty">
-
-          <div class="gb-empty-icon">
-            📂
-          </div>
-
-          Belum ada media tambahan untuk berita ini.
-
-        </div>
-
-      `;
-
-    }else{
-
-      html=`
-
-        <div class="gb-media-preview">
-
-          ${
-            data.map(function(m){
-
-              let content="";
-
-              if(m.file_type==="FOTO"){
-
-                content=`
-
-                  <img
-                    src="${gbEscapeAttr(m.file_url)}"
-                    alt="">
-
-                `;
-
-              }else if(
-                m.file_type==="VIDEO"
-              ){
-
-                content=`
-
-                  <video
-                    src="${gbEscapeAttr(m.file_url)}"
-                    controls>
-                  </video>
-
-                `;
-
-              }else{
-
-                content=`
-
-                  <div
-                    style="
-                      height:90px;
-                      display:flex;
-                      align-items:center;
-                      justify-content:center;
-                      font-size:32px;
-                      background:#f3f6f9;
-                    ">
-                    📄
-                  </div>
-
-                `;
-
-              }
-
-              return `
-
-                <div class="gb-media-card">
-
-                  ${content}
-
-                  <div class="gb-media-info">
-
-                    <b>
-                      ${gbEscape(m.file_type)}
-                    </b>
-
-                    <br>
-
-                    ${gbEscape(m.file_name)}
-
-                    <br>
-
-                    ${gbFormatSize(
-                      Number(m.file_size||0)
-                    )}
-
-                    <br><br>
-
-                    <a
-                      href="${gbEscapeAttr(m.file_url)}"
-                      target="_blank"
-                      rel="noopener">
-                      Buka File
-                    </a>
-
-                  </div>
-
-                </div>
-
-              `;
-
-            }).join("")
-
-          }
-
-        </div>
-
-      `;
-
-    }
-
-
-    gbShowSimpleModal(
-      "Media Berita",
-      html
-    );
-
-
-  }catch(err){
-
-    alert(
-      "Gagal memuat media:\n" +
-      err.message
-    );
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   SIMPLE MODAL
-   --------------------------------------------------------- */
-
-function gbShowSimpleModal(title,html){
-
-  const old =
-    document.getElementById("gbSimpleModal");
-
-  if(old) old.remove();
-
-
-  const modal =
-    document.createElement("div");
-
-  modal.id="gbSimpleModal";
-  modal.className="gb-modal show";
-
-
-  modal.innerHTML=`
-
-    <div class="gb-modal-box">
-
-      <div class="gb-modal-head">
-
-        <h3>
-          ${gbEscape(title)}
-        </h3>
+        <span>
+          ${gbSize(file.size)}
+        </span>
 
         <button
           type="button"
-          class="gb-close"
-          id="gbSimpleClose">
+          class="gb-remove-file">
           ×
         </button>
 
-      </div>
+      `;
 
-      <div
-        style="
-          padding:22px;
-        ">
+      row
+        .querySelector(
+          ".gb-remove-file"
+        )
+        .addEventListener(
+          "click",
+          function(){
 
-        ${html}
+            gbMediaFiles.splice(
+              index,
+              1
+            );
 
-      </div>
+            gbRenderFiles();
 
-    </div>
+          }
+        );
 
-  `;
+      box.appendChild(row);
 
-
-  document.body.appendChild(modal);
-
-
-  document
-    .getElementById("gbSimpleClose")
-    .addEventListener(
-      "click",
-      function(){
-        modal.remove();
-      }
-    );
-
+    }
+  );
 }
 
 
-/* ---------------------------------------------------------
-   SHOW PANEL
-   --------------------------------------------------------- */
+/* =========================================================
+   OPEN PANEL
+========================================================= */
 
-function gbShowPanel(){
+function gbOpenPanel(){
 
-  gbCreatePanel();
-  gbCreateModal();
-
-
-  const ids=[
-    "settingsPanel",
-    "dataAduanPanel",
-    "petugasPanel",
-    "overviewCards"
-  ];
-
-
-  ids.forEach(function(id){
-
-    const el =
-      document.getElementById(id);
-
-    if(el){
-
-      el.style.display="none";
-
-    }
-
-  });
-
+  gbMakePanel();
+  gbMakeModal();
 
   const panel =
     document.getElementById(
@@ -4968,169 +3561,775 @@ function gbShowPanel(){
 
   }
 
-
-  const nav =
-    document.querySelectorAll(".nav button");
-
-  nav.forEach(function(btn){
-
-    btn.classList.remove("active");
-
-  });
-
-
-  const beritaBtn =
-    document.getElementById("navBerita");
-
-  if(beritaBtn){
-
-    beritaBtn.classList.add("active");
-
-  }
-
-
-  const title =
-    document.querySelector(".top h1");
-
-  const breadcrumb =
-    document.querySelector(".breadcrumb b");
-
-
-  if(title){
-
-    title.textContent =
-      "Berita GEPARU";
-
-  }
-
-  if(breadcrumb){
-
-    breadcrumb.textContent =
-      "Berita";
-
-  }
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-
-  gbLoadBerita();
-
+  gbLoad();
 }
 
 
-/* ---------------------------------------------------------
-   HIDE PANEL SAAT MENU LAIN DIKLIK
-   --------------------------------------------------------- */
+/* =========================================================
+   MODAL OPEN
+========================================================= */
 
-function gbHookExistingMenus(){
+function gbOpenModal(){
 
-  const ids=[
-    "navOverview",
-    "navDataAduan",
-    "navPetugas",
-    "navPengaturan"
-  ];
+  gbMakeModal();
+
+  gbMainPhoto=null;
+  gbMediaFiles=[];
+
+  document
+    .getElementById(
+      "gbJudul"
+    ).value="";
+
+  document
+    .getElementById(
+      "gbIsi"
+    ).value="";
+
+  document
+    .getElementById(
+      "gbStatus"
+    ).value="DRAFT";
+
+  document
+    .getElementById(
+      "gbMainPhotoInput"
+    ).value="";
+
+  document
+    .getElementById(
+      "gbMediaInput"
+    ).value="";
+
+  document
+    .getElementById(
+      "gbPreview"
+    ).style.display="none";
+
+  document
+    .getElementById(
+      "gbFiles"
+    ).innerHTML="";
+
+  gbMessage(
+    "",
+    false
+  );
+
+  document
+    .getElementById(
+      "gbModal"
+    )
+    .classList.add(
+      "gb-show"
+    );
+}
 
 
-  ids.forEach(function(id){
+/* =========================================================
+   MODAL CLOSE
+========================================================= */
 
-    const btn =
-      document.getElementById(id);
+function gbCloseModal(){
 
-    if(!btn) return;
+  const modal =
+    document.getElementById(
+      "gbModal"
+    );
+
+  if(modal){
+
+    modal.classList.remove(
+      "gb-show"
+    );
+
+  }
+}
 
 
-    btn.addEventListener(
-      "click",
-      function(){
+/* =========================================================
+   LOAD BERITA
+========================================================= */
 
-        const panel =
-          document.getElementById(
-            "geparuBeritaPanel"
+async function gbLoad(){
+
+  const rows =
+    document.getElementById(
+      "gbRows"
+    );
+
+  if(!rows) return;
+
+  rows.innerHTML=`
+
+    <tr>
+
+      <td colspan="5">
+
+        <div class="gb-empty">
+          Memuat berita...
+        </div>
+
+      </td>
+
+    </tr>
+  `;
+
+  try{
+
+    const response =
+      await fetch(
+        GB_URL+
+        "/rest/v1/berita?select=*&order=created_at.desc",
+        {
+          method:"GET",
+          headers:gbHeaders()
+        }
+      );
+
+    if(!response.ok){
+
+      throw new Error(
+        await response.text()
+      );
+
+    }
+
+    let data =
+      await response.json();
+
+    const search =
+      (
+        document
+          .getElementById(
+            "gbSearch"
+          )?.value || ""
+      )
+      .toLowerCase()
+      .trim();
+
+    if(search){
+
+      data =
+        data.filter(
+          function(item){
+
+            return String(
+              item.judul || ""
+            )
+            .toLowerCase()
+            .includes(search);
+
+          }
+        );
+
+    }
+
+    if(!data.length){
+
+      rows.innerHTML=`
+
+        <tr>
+
+          <td colspan="5">
+
+            <div class="gb-empty">
+
+              📰<br>
+              Belum ada berita.
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      `;
+
+      return;
+    }
+
+    rows.innerHTML="";
+
+    data.forEach(
+      function(item){
+
+        const tr =
+          document.createElement(
+            "tr"
           );
 
-        if(panel){
+        const status =
+          String(
+            item.status || "DRAFT"
+          ).toUpperCase();
 
-          panel.style.display="none";
+        let statusClass =
+          "gb-status-draft";
 
+        if(status==="TERBIT"){
+          statusClass=
+            "gb-status-terbit";
         }
+
+        if(status==="ARSIP"){
+          statusClass=
+            "gb-status-arsip";
+        }
+
+        tr.innerHTML=`
+
+          <td>
+
+            ${
+              item.foto_utama
+
+              ?
+
+              `
+              <img
+                class="gb-thumb"
+                src="${gbEscape(
+                  item.foto_utama
+                )}">
+              `
+
+              :
+
+              `
+              <div
+                class="gb-thumb"
+                style="
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                ">
+                📰
+              </div>
+              `
+            }
+
+          </td>
+
+
+          <td>
+
+            <strong>
+              ${gbEscape(
+                item.judul || "-"
+              )}
+            </strong>
+
+          </td>
+
+
+          <td>
+
+            ${gbDate(
+              item.created_at
+            )}
+
+          </td>
+
+
+          <td>
+
+            <span
+              class="gb-status ${statusClass}">
+
+              ${gbEscape(status)}
+
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <div class="gb-actions">
+
+              <button
+                type="button"
+                class="gb-btn gb-btn-danger gb-delete">
+
+                Hapus
+
+              </button>
+
+            </div>
+
+          </td>
+
+        `;
+
+        tr
+          .querySelector(
+            ".gb-delete"
+          )
+          .addEventListener(
+            "click",
+            function(){
+
+              gbDelete(
+                item.id,
+                item.judul
+              );
+
+            }
+          );
+
+        rows.appendChild(tr);
 
       }
     );
 
-  });
+  }catch(error){
 
+    rows.innerHTML=`
+
+      <tr>
+
+        <td colspan="5">
+
+          <div class="gb-empty">
+
+            ⚠️ Gagal memuat berita.
+
+            <br>
+
+            <small>
+              ${gbEscape(
+                error.message
+              )}
+            </small>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `;
+
+  }
 }
 
 
-/* ---------------------------------------------------------
-   HELPERS
-   --------------------------------------------------------- */
+/* =========================================================
+   SAVE BERITA
+========================================================= */
 
-function gbSlugify(text){
+async function gbSave(){
 
-  return String(text||"")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g,"")
-    .replace(/\s+/g,"-")
-    .replace(/-+/g,"-")
-    .replace(/^-|-$/g,"")
-    .slice(0,120);
+  const judul =
+    document
+      .getElementById(
+        "gbJudul"
+      )
+      .value
+      .trim();
 
+  const isi =
+    document
+      .getElementById(
+        "gbIsi"
+      )
+      .value;
+
+  const status =
+    document
+      .getElementById(
+        "gbStatus"
+      )
+      .value;
+
+  if(!judul){
+
+    gbMessage(
+      "Judul berita wajib diisi.",
+      true
+    );
+
+    return;
+  }
+
+  const button =
+    document.getElementById(
+      "gbSave"
+    );
+
+  button.disabled=true;
+  button.textContent=
+    "Menyimpan...";
+
+  try{
+
+    let fotoUrl=null;
+
+
+    /*
+     * UPLOAD FOTO UTAMA
+     */
+
+    if(gbMainPhoto){
+
+      fotoUrl =
+        await gbUpload(
+          gbMainPhoto,
+          "foto-utama"
+        );
+
+    }
+
+
+    /*
+     * INSERT BERITA
+     */
+
+    const beritaBody={
+
+      judul:judul,
+
+      slug:gbSlug(
+        judul
+      ),
+
+      isi:isi,
+
+      status:status,
+
+      updated_at:
+        new Date()
+        .toISOString()
+
+    };
+
+    if(fotoUrl){
+
+      beritaBody.foto_utama =
+        fotoUrl;
+
+    }
+
+
+    const response =
+      await fetch(
+        GB_URL+
+        "/rest/v1/berita",
+        {
+          method:"POST",
+          headers:gbHeaders({
+            "Content-Type":
+              "application/json",
+
+            "Prefer":
+              "return=representation"
+          }),
+          body:
+            JSON.stringify(
+              beritaBody
+            )
+        }
+      );
+
+    if(!response.ok){
+
+      throw new Error(
+        await response.text()
+      );
+
+    }
+
+
+    const result =
+      await response.json();
+
+    const berita =
+      Array.isArray(result)
+      ? result[0]
+      : result;
+
+
+    /*
+     * UPLOAD MEDIA TAMBAHAN
+     */
+
+    if(
+      berita &&
+      berita.id &&
+      gbMediaFiles.length
+    ){
+
+      for(
+        let i=0;
+        i<gbMediaFiles.length;
+        i++
+      ){
+
+        const file =
+          gbMediaFiles[i];
+
+        const fileUrl =
+          await gbUpload(
+            file,
+            "media"
+          );
+
+        await fetch(
+          GB_URL+
+          "/rest/v1/berita_media",
+          {
+            method:"POST",
+            headers:gbHeaders({
+              "Content-Type":
+                "application/json",
+
+              "Prefer":
+                "return=minimal"
+            }),
+
+            body:
+              JSON.stringify({
+
+                berita_id:
+                  berita.id,
+
+                file_name:
+                  file.name,
+
+                file_url:
+                  fileUrl,
+
+                file_type:
+                  gbType(file),
+
+                mime_type:
+                  file.type || null,
+
+                file_size:
+                  file.size,
+
+                urutan:
+                  i
+
+              })
+
+          }
+        );
+
+      }
+
+    }
+
+
+    alert(
+      "Berita berhasil disimpan."
+    );
+
+    gbCloseModal();
+
+    gbLoad();
+
+
+  }catch(error){
+
+    gbMessage(
+      "Gagal menyimpan berita: "+
+      error.message,
+      true
+    );
+
+  }finally{
+
+    button.disabled=false;
+
+    button.textContent=
+      "Simpan Berita";
+
+  }
 }
 
 
-function gbSafeFileName(name){
+/* =========================================================
+   UPLOAD SUPABASE STORAGE
+========================================================= */
 
-  return String(name||"file")
-    .replace(/[^a-zA-Z0-9._-]/g,"_")
-    .slice(0,180);
+async function gbUpload(
+  file,
+  folder
+){
 
-}
+  const filename =
+    Date.now()+
+    "_" +
+    Math.random()
+      .toString(36)
+      .substring(2,8)+
+    "_" +
+    gbSafe(
+      file.name
+    );
 
+  const path =
+    folder+
+    "/" +
+    filename;
 
-function gbFormatSize(bytes){
+  const response =
+    await fetch(
+      GB_URL+
+      "/storage/v1/object/"+
+      GB_BUCKET+
+      "/" +
+      path,
+      {
+        method:"POST",
 
-  bytes=Number(bytes||0);
+        headers:gbHeaders({
+          "Content-Type":
+            file.type ||
+            "application/octet-stream",
 
-  if(bytes<1024){
+          "x-upsert":
+            "false"
+        }),
 
-    return bytes+" B";
+        body:file
+      }
+    );
+
+  if(!response.ok){
+
+    throw new Error(
+      await response.text()
+    );
 
   }
 
-  if(bytes<1024*1024){
+  return(
+    GB_URL+
+    "/storage/v1/object/public/"+
+    GB_BUCKET+
+    "/" +
+    path
+  );
+}
 
-    return (
-      (bytes/1024).toFixed(1) +
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+async function gbDelete(
+  id,
+  judul
+){
+
+  if(
+    !confirm(
+      "Hapus berita:\n\n"+
+      judul+
+      "\n\nLanjutkan?"
+    )
+  ){
+
+    return;
+
+  }
+
+  try{
+
+    const response =
+      await fetch(
+        GB_URL+
+        "/rest/v1/berita?id=eq."+
+        encodeURIComponent(id),
+        {
+          method:"DELETE",
+          headers:gbHeaders()
+        }
+      );
+
+    if(!response.ok){
+
+      throw new Error(
+        await response.text()
+      );
+
+    }
+
+    gbLoad();
+
+  }catch(error){
+
+    alert(
+      "Gagal menghapus:\n"+
+      error.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   UTILITAS
+========================================================= */
+
+function gbType(file){
+
+  if(
+    file.type &&
+    file.type.startsWith(
+      "image/"
+    )
+  ){
+
+    return "FOTO";
+
+  }
+
+  if(
+    file.type &&
+    file.type.startsWith(
+      "video/"
+    )
+  ){
+
+    return "VIDEO";
+
+  }
+
+  return "DOKUMEN";
+}
+
+
+function gbSize(size){
+
+  if(size < 1024){
+
+    return size+" B";
+
+  }
+
+  if(size < 1024*1024){
+
+    return(
+      (size/1024)
+      .toFixed(1)+
       " KB"
     );
 
   }
 
-  if(bytes<1024*1024*1024){
-
-    return (
-      (bytes/(1024*1024)).toFixed(1) +
-      " MB"
-    );
-
-  }
-
-  return (
-    (bytes/(1024*1024*1024)).toFixed(1) +
-    " GB"
+  return(
+    (size/(1024*1024))
+    .toFixed(1)+
+    " MB"
   );
-
 }
 
 
-function gbFormatDate(value){
+function gbDate(value){
 
   if(!value) return "-";
 
@@ -5141,9 +4340,7 @@ function gbFormatDate(value){
       {
         day:"2-digit",
         month:"2-digit",
-        year:"numeric",
-        hour:"2-digit",
-        minute:"2-digit"
+        year:"numeric"
       }
     ).format(
       new Date(value)
@@ -5151,33 +4348,77 @@ function gbFormatDate(value){
 
   }catch(e){
 
-    return value;
+    return "-";
 
   }
+}
 
+
+function gbSlug(text){
+
+  return String(text || "")
+    .toLowerCase()
+    .trim()
+    .replace(
+      /[^a-z0-9\s-]/g,
+      ""
+    )
+    .replace(
+      /\s+/g,
+      "-"
+    )
+    .replace(
+      /-+/g,
+      "-"
+    )
+    .substring(0,120);
+}
+
+
+function gbSafe(name){
+
+  return String(
+    name || "file"
+  )
+  .replace(
+    /[^a-zA-Z0-9._-]/g,
+    "_"
+  );
 }
 
 
 function gbEscape(value){
 
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
 }
 
 
-function gbEscapeAttr(value){
-
-  return gbEscape(value);
-
-}
-
-
-function gbShowMessage(text,type){
+function gbMessage(
+  text,
+  error
+){
 
   const box =
     document.getElementById(
@@ -5185,77 +4426,50 @@ function gbShowMessage(text,type){
     );
 
   if(!box) return;
-
-  box.className =
-    "gb-message " +
-    (type || "success");
 
   box.textContent=text;
 
+  box.className=
+    "gb-message";
+
+  if(text){
+
+    box.classList.add(
+      "show"
+    );
+
+    box.classList.add(
+      error
+      ? "error"
+      : "success"
+    );
+
+  }
 }
 
 
-function gbClearMessage(){
-
-  const box =
-    document.getElementById(
-      "gbMessage"
-    );
-
-  if(!box) return;
-
-  box.className="gb-message";
-  box.textContent="";
-
-}
-
-
-function gbShowProgress(percent){
-
-  const wrap =
-    document.getElementById(
-      "gbProgress"
-    );
-
-  const inner =
-    document.getElementById(
-      "gbProgressInner"
-    );
-
-  if(!wrap || !inner) return;
-
-  wrap.style.display="block";
-
-  inner.style.width =
-    Math.max(
-      0,
-      Math.min(100,percent)
-    ) + "%";
-
-}
-
-
-/* ---------------------------------------------------------
+/* =========================================================
    INIT
-   --------------------------------------------------------- */
+========================================================= */
 
 function gbInit(){
 
-  gbCreateMenu();
-  gbCreatePanel();
-  gbCreateModal();
-  gbHookExistingMenus();
+  gbMakeMenu();
+
+  gbMakePanel();
+
+  gbMakeModal();
 
 }
 
 
 /*
-  Karena dashboard melakukan proses login,
-  kita pasang modul setelah DOM tersedia.
-*/
+ * Jalankan setelah DOM siap.
+ */
 
 if(
-  document.readyState === "loading"
+  document.readyState ===
+  "loading"
 ){
 
   document.addEventListener(
@@ -5270,121 +4484,24 @@ if(
 }
 
 
-/* ---------------------------------------------------------
-   PUBLIC API
-   --------------------------------------------------------- */
+/* =========================================================
+   PUBLIC
+========================================================= */
 
 window.GEPARU_BERITA = {
 
-  open:function(){
-    gbShowPanel();
-  },
+  open:gbOpenPanel,
 
-  refresh:function(){
-    gbLoadBerita();
-  }
+  refresh:gbLoad
 
 };
 
 })();
-<style>
-/* FIX FILE PICKER GEPARU ANDROID */
-.gb-upload-label{
-  position:relative;
-  cursor:pointer !important;
-}
-
-.gb-upload-label input[type="file"]{
-  position:absolute !important;
-  width:1px !important;
-  height:1px !important;
-  opacity:0 !important;
-  overflow:hidden !important;
-  pointer-events:none !important;
-}
-</style>
-
-<script>
-(function(){
-
-  function fixGeparuFilePicker(){
-
-    const mainInput =
-      document.getElementById("gbMainPhoto");
-
-    const mediaInput =
-      document.getElementById("gbMediaInput");
-
-    if(mainInput){
-
-      const mainLabel =
-        mainInput.closest(".gb-upload-label");
-
-      if(mainLabel && !mainLabel.dataset.fileFix){
-
-        mainLabel.dataset.fileFix="1";
-
-        mainLabel.addEventListener("click",function(e){
-
-          e.preventDefault();
-          e.stopPropagation();
-
-          mainInput.click();
-
-        });
-
-      }
-
-    }
-
-
-    if(mediaInput){
-
-      const mediaLabel =
-        mediaInput.closest(".gb-upload-label");
-
-      if(mediaLabel && !mediaLabel.dataset.fileFix){
-
-        mediaLabel.dataset.fileFix="1";
-
-        mediaLabel.addEventListener("click",function(e){
-
-          e.preventDefault();
-          e.stopPropagation();
-
-          mediaInput.click();
-
-        });
-
-      }
-
-    }
-
-  }
-
-
-  /* Jalankan pertama kali */
-  fixGeparuFilePicker();
-
-
-  /* Karena modal dibuat dinamis */
-  const observer =
-    new MutationObserver(function(){
-
-      fixGeparuFilePicker();
-
-    });
-
-
-  observer.observe(
-    document.body,
-    {
-      childList:true,
-      subtree:true
-    }
-  );
-
-})();
 </script>
+
+<!-- END MODUL BERITA BARU -->
+
+</body>
+</html>
 </body>
 </html>
