@@ -1409,6 +1409,12 @@ const ACTOR_MARKER_PREFIX = "[[ACTOR_EMAIL:";
 const ACTOR_MARKER_SUFFIX = "]]";
 
 async function getCurrentActivityActor(){
+  // Identitas utama selalu diambil dari sesi Supabase Auth yang sedang login.
+  // Jika endpoint Auth sedang gagal sesaat, gunakan identitas sesi yang sudah
+  // tersimpan agar Gmail pelaku tidak berubah menjadi "Tidak diketahui".
+  let email=String(currentAdminEmail||sessionStorage.getItem("geparu_admin_email")||"").trim().toLowerCase();
+  let id=String(currentAdminUserId||sessionStorage.getItem("geparu_admin_user_id")||"").trim();
+
   if(currentAccessToken){
     try{
       const res=await fetch(SUPABASE_URL+"/auth/v1/user",{
@@ -1422,21 +1428,20 @@ async function getCurrentActivityActor(){
       if(res.ok){
         const user=await res.json().catch(()=>null);
         if(user){
-          currentAdminUserId=user.id || currentAdminUserId || "";
-          currentAdminEmail=user.email || currentAdminEmail || "";
-          if(currentAdminUserId) sessionStorage.setItem("geparu_admin_user_id",currentAdminUserId);
-          if(currentAdminEmail) sessionStorage.setItem("geparu_admin_email",currentAdminEmail);
+          id=String(user.id||id||"").trim();
+          email=String(user.email||email||"").trim().toLowerCase();
+          currentAdminUserId=id;
+          currentAdminEmail=email;
+          if(id) sessionStorage.setItem("geparu_admin_user_id",id);
+          if(email) sessionStorage.setItem("geparu_admin_email",email);
         }
       }
     }catch(e){
-      console.warn("Tidak dapat membaca identitas pelaku:",e);
+      console.warn("Tidak dapat membaca identitas pelaku dari Auth. Memakai sesi tersimpan:",e);
     }
   }
 
-  return {
-    id:String(currentAdminUserId||"").trim(),
-    email:String(currentAdminEmail||"").trim().toLowerCase()
-  };
+  return {id,email};
 }
 
 function buildActivityDescription(description,email){
@@ -1887,11 +1892,62 @@ async function ensurePetugasMasterLoaded(){
   }
 }
 
+function normalizeActivityValue(v){
+  return String(v ?? "").trim();
+}
+
+function describeAduanChanges(before,payload,nomor){
+  const changes=[];
+  const oldStatus=normalizeActivityValue(before?.status);
+  const newStatus=normalizeActivityValue(payload.status);
+  const oldPetugas=normalizeActivityValue(before?.petugas);
+  const newPetugas=normalizeActivityValue(payload.petugas);
+  const oldCatatan=normalizeActivityValue(before?.catatan);
+  const newCatatan=normalizeActivityValue(payload.catatan);
+
+  if(oldStatus!==newStatus){
+    changes.push(`Mengubah status aduan ${nomor} dari ${oldStatus||"-"} menjadi ${newStatus||"-"}`);
+  }
+  if(oldPetugas!==newPetugas){
+    if(!oldPetugas && newPetugas) changes.push(`Menugaskan petugas ${newPetugas} pada aduan ${nomor}`);
+    else if(oldPetugas && !newPetugas) changes.push(`Melepas petugas ${oldPetugas} dari aduan ${nomor}`);
+    else changes.push(`Mengganti petugas aduan ${nomor} dari ${oldPetugas} menjadi ${newPetugas}`);
+  }
+  if(oldCatatan!==newCatatan){
+    changes.push(`Mengubah catatan aduan ${nomor}`);
+  }
+  return changes.length ? changes.join(" | ") : `Menyimpan ulang data aduan ${nomor} tanpa perubahan nilai`;
+}
+
+function describePetugasChanges(before,payload){
+  const nama=payload.nama_petugas||before?.nama_petugas||"-";
+  const changes=[];
+  const fields=[
+    ["nama", "nama_petugas"],
+    ["WhatsApp", "whatsapp"],
+    ["jabatan", "jabatan"],
+    ["username", "username"],
+    ["catatan", "catatan"]
+  ];
+  for(const [label,key] of fields){
+    if(normalizeActivityValue(before?.[key])!==normalizeActivityValue(payload?.[key])) changes.push(label);
+  }
+  const oldStatus=normalizeActivityValue(before?.status).toUpperCase();
+  const newStatus=normalizeActivityValue(payload?.status).toUpperCase();
+  if(oldStatus!==newStatus){
+    if(oldStatus==="AKTIF" && newStatus==="NONAKTIF") return `Menonaktifkan petugas: ${nama}`;
+    if(oldStatus==="NONAKTIF" && newStatus==="AKTIF") return `Mengaktifkan petugas: ${nama}`;
+    changes.push(`status dari ${oldStatus||"-"} menjadi ${newStatus||"-"}`);
+  }
+  return changes.length ? `Mengedit petugas: ${nama} (${changes.join(", ")})` : `Menyimpan ulang data petugas: ${nama} tanpa perubahan nilai`;
+}
+
 async function saveDetailChanges(){
   const actions = document.getElementById("detailActions");
   const nomor = actions.dataset.nomor;
   if(!nomor) return;
 
+  const before = rows.find(x => String(x.nomor_aduan) === String(nomor)) || {};
   const btn = document.getElementById("saveDetail");
   const msg = document.getElementById("saveDetailMsg");
   const payload = {
@@ -1935,9 +1991,7 @@ async function saveDetailChanges(){
 
     await writeActivityLog(
       "UPDATE",
-      "Memperbarui aduan: " + nomor +
-      " | Status: " + (payload.status || "-") +
-      " | Petugas: " + (payload.petugas || "-")
+      describeAduanChanges(before,payload,nomor)
     );
 
     msg.style.color = "#14743e";
@@ -2129,8 +2183,9 @@ async function savePetugasMaster(e){
   const payload={client_code:"GEPARU",nama_petugas:document.getElementById("pmNama").value.trim(),whatsapp:document.getElementById("pmWhatsapp").value.trim()||null,jabatan:document.getElementById("pmJabatan").value.trim()||null,username:document.getElementById("pmUsername").value.trim()||null,status:document.getElementById("pmStatus").value,catatan:document.getElementById("pmCatatan").value.trim()||null};
   if(!payload.nama_petugas){alert("Nama petugas wajib diisi.");return;}
   const submit=e.submitter; if(submit){submit.disabled=true;submit.textContent="Menyimpan...";}
+  const isEdit=!!id;
+  const beforePetugas=isEdit?petugasMasterData.find(x=>String(x.id)===String(id))||{}:{};
   try{
-    const isEdit=!!id;
     if(isEdit){
       const res=await fetch(PETUGAS_DB_URL+"?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:petugasHeaders({"Prefer":"return=representation"}),body:JSON.stringify(payload)});
       if(!res.ok)throw new Error(await res.text());
@@ -2141,7 +2196,7 @@ async function savePetugasMaster(e){
 
     await writeActivityLog(
       isEdit ? "UPDATE" : "INSERT",
-      (isEdit ? "Memperbarui petugas: " : "Menambahkan petugas: ") + payload.nama_petugas
+      isEdit ? describePetugasChanges(beforePetugas,payload) : "Menambahkan petugas baru: " + payload.nama_petugas
     );
 
     await loadPetugasFromSupabase();
@@ -2160,7 +2215,9 @@ async function togglePetugasMaster(id){
 
     await writeActivityLog(
       "UPDATE",
-      "Mengubah status petugas: " + (p.nama_petugas||"-") + " menjadi " + next
+      next==="NONAKTIF"
+        ? "Menonaktifkan petugas: " + (p.nama_petugas||"-")
+        : "Mengaktifkan petugas: " + (p.nama_petugas||"-")
     );
 
     await loadPetugasFromSupabase();
