@@ -1413,11 +1413,17 @@ let sortKey = "tanggal_masuk";
 let sortDir = "desc";
 
 function headers(){
-  return {
+  // Semua operasi dashboard memakai JWT admin yang sedang login.
+  // Ini membuat Supabase dapat mengetahui siapa pelaku setiap perubahan.
+  const token = currentAccessToken || SUPABASE_PUBLISHABLE_KEY;
+  const actor = String(currentAdminEmail || sessionStorage.getItem("geparu_admin_email") || "").trim().toLowerCase();
+  const h = {
     "apikey": SUPABASE_PUBLISHABLE_KEY,
-    "Authorization": "Bearer " + SUPABASE_PUBLISHABLE_KEY,
+    "Authorization": "Bearer " + token,
     "Accept": "application/json"
   };
+  if(actor) h["x-geparu-actor-email"] = actor;
+  return h;
 }
 
 async function loadAduan(){
@@ -2008,14 +2014,16 @@ function escPetugas(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"
 
 const PETUGAS_DB_URL=SUPABASE_URL+"/rest/v1/petugas_geparu";
 function petugasHeaders(extra={}){
-  // Pakai JWT admin yang sedang login supaya trigger Supabase mengetahui pelaku.
   const token=currentAccessToken || SUPABASE_PUBLISHABLE_KEY;
-  return Object.assign({
+  const actor=String(currentAdminEmail || sessionStorage.getItem("geparu_admin_email") || "").trim().toLowerCase();
+  const h={
     "apikey":SUPABASE_PUBLISHABLE_KEY,
     "Authorization":"Bearer "+token,
     "Content-Type":"application/json",
     "Accept":"application/json"
-  },extra)
+  };
+  if(actor) h["x-geparu-actor-email"]=actor;
+  return Object.assign(h,extra);
 }
 
 async function loadPetugasFromSupabase(){
@@ -3155,20 +3163,19 @@ let gbEditing = false;
    --------------------------------------------------------- */
 
 function gbAuthHeaders(extra={}){
-
-  let token = "";
-
+  let token="";
+  let actor="";
   try{
-    if(typeof currentAccessToken !== "undefined"){
-      token = currentAccessToken || "";
-    }
+    if(typeof currentAccessToken!=="undefined") token=currentAccessToken||"";
+    if(typeof currentAdminEmail!=="undefined") actor=String(currentAdminEmail||sessionStorage.getItem("geparu_admin_email")||"").trim().toLowerCase();
   }catch(e){}
-
-  return Object.assign({
-    "apikey": GB_PUBLISHABLE_KEY,
-    "Authorization": "Bearer " + token,
-    "Accept": "application/json"
-  },extra);
+  const h={
+    "apikey":GB_PUBLISHABLE_KEY,
+    "Authorization":"Bearer "+(token||GB_PUBLISHABLE_KEY),
+    "Accept":"application/json"
+  };
+  if(actor) h["x-geparu-actor-email"]=actor;
+  return Object.assign(h,extra);
 }
 
 
