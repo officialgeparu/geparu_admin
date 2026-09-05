@@ -885,7 +885,6 @@ const ADUAN_URL = SUPABASE_URL + "/rest/v1/aduan";
 let currentAccessToken = sessionStorage.getItem("geparu_admin_access_token") || "";
 let currentRefreshToken = sessionStorage.getItem("geparu_admin_refresh_token") || "";
 let currentAdminEmail = sessionStorage.getItem("geparu_admin_email") || "";
-let currentAdminUserId = sessionStorage.getItem("geparu_admin_user_id") || "";
 let dashboardStarted = false;
 
 function authHeaders(extra={}){
@@ -898,6 +897,50 @@ function authHeaders(extra={}){
     "Authorization": "Bearer " + SUPABASE_PUBLISHABLE_KEY,
     "Accept": "application/json"
   }, extra);
+}
+
+// ======================================================
+// ACTIVITY LOG — IDENTITAS PELAKU DARI GMAIL LOGIN
+// Tidak mengubah alur dashboard yang sudah berjalan.
+// ======================================================
+const ACTIVITY_LOG_URL = SUPABASE_URL + "/rest/v1/activity_logs";
+
+async function getCurrentActor(){
+  let email=String(currentAdminEmail||sessionStorage.getItem("geparu_admin_email")||"").trim().toLowerCase();
+  let userId="";
+  if(currentAccessToken){
+    try{
+      const r=await fetch(SUPABASE_URL+"/auth/v1/user",{headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+currentAccessToken,"Accept":"application/json"}});
+      if(r.ok){
+        const u=await r.json();
+        userId=String(u?.id||"");
+        if(u?.email){ email=String(u.email).trim().toLowerCase(); currentAdminEmail=email; sessionStorage.setItem("geparu_admin_email",email); }
+      }
+    }catch(e){ console.warn("Tidak dapat membaca actor login:",e); }
+  }
+  return {email,userId};
+}
+
+async function writeActivityLog({action,description,status="SUCCESS",module="SOSIAL"}){
+  try{
+    const actor=await getCurrentActor();
+    const payload={
+      module_slug:module,
+      action:String(action||"UPDATE").toUpperCase(),
+      description:String(description||"Aktivitas dashboard"),
+      status:String(status||"SUCCESS").toUpperCase(),
+      actor_email:actor.email||null,
+      admin_email:actor.email||null,
+      user_id:actor.userId||null
+    };
+    const res=await fetch(ACTIVITY_LOG_URL,{method:"POST",headers:authHeaders({"Content-Type":"application/json","Prefer":"return=minimal"}),body:JSON.stringify(payload)});
+    if(!res.ok){
+      const detail=await res.text().catch(()=>"");
+      console.warn("Activity Log gagal disimpan:",res.status,detail,payload);
+      return false;
+    }
+    return true;
+  }catch(e){ console.warn("Activity Log error:",e); return false; }
 }
 
 function showAdminLogin(message="", isError=true){
@@ -924,8 +967,6 @@ function clearAdminSession(){
   currentAccessToken="";
   currentRefreshToken="";
   currentAdminEmail="";
-  currentAdminUserId="";
-  sessionStorage.removeItem("geparu_admin_user_id");
   sessionStorage.removeItem("geparu_admin_access_token");
   sessionStorage.removeItem("geparu_admin_refresh_token");
   sessionStorage.removeItem("geparu_admin_email");
@@ -949,9 +990,7 @@ async function verifyAdminSession(){
     const user=await res.json().catch(()=>null);
     if(!user || !user.id || !user.email) return false;
     currentAdminEmail=user.email;
-    currentAdminUserId=user.id;
     sessionStorage.setItem("geparu_admin_email",currentAdminEmail);
-    sessionStorage.setItem("geparu_admin_user_id",currentAdminUserId);
     return true;
   }catch(e){
     return false;
@@ -1397,96 +1436,6 @@ function headers(){
   };
 }
 
-
-/* =========================================================
-   ACTIVITY LOG — IDENTITAS PELAKU
-   Setiap perubahan baru mengambil user Supabase yang sedang login.
-   Email juga disimpan sebagai penanda di description agar Activity CORE
-   dapat menampilkan Gmail pelaku tanpa mengubah struktur tabel lama.
-   ========================================================= */
-const ACTIVITY_LOG_URL = SUPABASE_URL + "/rest/v1/activity_logs";
-const ACTOR_MARKER_PREFIX = "[[ACTOR_EMAIL:";
-const ACTOR_MARKER_SUFFIX = "]]";
-
-async function getCurrentActivityActor(){
-  // Identitas utama selalu diambil dari sesi Supabase Auth yang sedang login.
-  // Jika endpoint Auth sedang gagal sesaat, gunakan identitas sesi yang sudah
-  // tersimpan agar Gmail pelaku tidak berubah menjadi "Tidak diketahui".
-  let email=String(currentAdminEmail||sessionStorage.getItem("geparu_admin_email")||"").trim().toLowerCase();
-  let id=String(currentAdminUserId||sessionStorage.getItem("geparu_admin_user_id")||"").trim();
-
-  if(currentAccessToken){
-    try{
-      const res=await fetch(SUPABASE_URL+"/auth/v1/user",{
-        headers:{
-          "apikey":SUPABASE_PUBLISHABLE_KEY,
-          "Authorization":"Bearer "+currentAccessToken,
-          "Accept":"application/json"
-        },
-        cache:"no-store"
-      });
-      if(res.ok){
-        const user=await res.json().catch(()=>null);
-        if(user){
-          id=String(user.id||id||"").trim();
-          email=String(user.email||email||"").trim().toLowerCase();
-          currentAdminUserId=id;
-          currentAdminEmail=email;
-          if(id) sessionStorage.setItem("geparu_admin_user_id",id);
-          if(email) sessionStorage.setItem("geparu_admin_email",email);
-        }
-      }
-    }catch(e){
-      console.warn("Tidak dapat membaca identitas pelaku dari Auth. Memakai sesi tersimpan:",e);
-    }
-  }
-
-  return {id,email};
-}
-
-function buildActivityDescription(description,email){
-  const text=String(description||"").trim();
-  const actorEmail=String(email||"").trim().toLowerCase();
-  if(!actorEmail) return text;
-  return ACTOR_MARKER_PREFIX + encodeURIComponent(actorEmail) + ACTOR_MARKER_SUFFIX + " " + text;
-}
-
-async function writeActivityLog(action,description,module="SOSIAL"){
-  try{
-    const actor=await getCurrentActivityActor();
-    const payload={
-      action:String(action||"UPDATE").toUpperCase(),
-      module:String(module||"SOSIAL").toUpperCase(),
-      description:buildActivityDescription(description,actor.email)
-    };
-
-    // user_id hanya dikirim jika UUID user benar-benar tersedia.
-    if(actor.id) payload.user_id=actor.id;
-
-    const res=await fetch(ACTIVITY_LOG_URL,{
-      method:"POST",
-      headers:{
-        ...headers(),
-        "Content-Type":"application/json",
-        "Prefer":"return=minimal"
-      },
-      body:JSON.stringify(payload)
-    });
-
-    if(!res.ok){
-      const detail=await res.text().catch(()=>"");
-      console.warn("Activity Log gagal disimpan:",res.status,detail);
-      return false;
-    }
-
-    return true;
-  }catch(err){
-    // Activity Log tidak boleh menggagalkan proses utama yang sudah berhasil.
-    console.warn("Activity Log error:",err);
-    return false;
-  }
-}
-
 async function loadAduan(){
   const res = await fetch(
     ADUAN_URL +
@@ -1892,62 +1841,11 @@ async function ensurePetugasMasterLoaded(){
   }
 }
 
-function normalizeActivityValue(v){
-  return String(v ?? "").trim();
-}
-
-function describeAduanChanges(before,payload,nomor){
-  const changes=[];
-  const oldStatus=normalizeActivityValue(before?.status);
-  const newStatus=normalizeActivityValue(payload.status);
-  const oldPetugas=normalizeActivityValue(before?.petugas);
-  const newPetugas=normalizeActivityValue(payload.petugas);
-  const oldCatatan=normalizeActivityValue(before?.catatan);
-  const newCatatan=normalizeActivityValue(payload.catatan);
-
-  if(oldStatus!==newStatus){
-    changes.push(`Mengubah status aduan ${nomor} dari ${oldStatus||"-"} menjadi ${newStatus||"-"}`);
-  }
-  if(oldPetugas!==newPetugas){
-    if(!oldPetugas && newPetugas) changes.push(`Menugaskan petugas ${newPetugas} pada aduan ${nomor}`);
-    else if(oldPetugas && !newPetugas) changes.push(`Melepas petugas ${oldPetugas} dari aduan ${nomor}`);
-    else changes.push(`Mengganti petugas aduan ${nomor} dari ${oldPetugas} menjadi ${newPetugas}`);
-  }
-  if(oldCatatan!==newCatatan){
-    changes.push(`Mengubah catatan aduan ${nomor}`);
-  }
-  return changes.length ? changes.join(" | ") : `Menyimpan ulang data aduan ${nomor} tanpa perubahan nilai`;
-}
-
-function describePetugasChanges(before,payload){
-  const nama=payload.nama_petugas||before?.nama_petugas||"-";
-  const changes=[];
-  const fields=[
-    ["nama", "nama_petugas"],
-    ["WhatsApp", "whatsapp"],
-    ["jabatan", "jabatan"],
-    ["username", "username"],
-    ["catatan", "catatan"]
-  ];
-  for(const [label,key] of fields){
-    if(normalizeActivityValue(before?.[key])!==normalizeActivityValue(payload?.[key])) changes.push(label);
-  }
-  const oldStatus=normalizeActivityValue(before?.status).toUpperCase();
-  const newStatus=normalizeActivityValue(payload?.status).toUpperCase();
-  if(oldStatus!==newStatus){
-    if(oldStatus==="AKTIF" && newStatus==="NONAKTIF") return `Menonaktifkan petugas: ${nama}`;
-    if(oldStatus==="NONAKTIF" && newStatus==="AKTIF") return `Mengaktifkan petugas: ${nama}`;
-    changes.push(`status dari ${oldStatus||"-"} menjadi ${newStatus||"-"}`);
-  }
-  return changes.length ? `Mengedit petugas: ${nama} (${changes.join(", ")})` : `Menyimpan ulang data petugas: ${nama} tanpa perubahan nilai`;
-}
-
 async function saveDetailChanges(){
   const actions = document.getElementById("detailActions");
   const nomor = actions.dataset.nomor;
   if(!nomor) return;
 
-  const before = rows.find(x => String(x.nomor_aduan) === String(nomor)) || {};
   const btn = document.getElementById("saveDetail");
   const msg = document.getElementById("saveDetailMsg");
   const payload = {
@@ -1988,11 +1886,6 @@ async function saveDetailChanges(){
 
     updateCards();
     render();
-
-    await writeActivityLog(
-      "UPDATE",
-      describeAduanChanges(before,payload,nomor)
-    );
 
     msg.style.color = "#14743e";
     msg.textContent = "✓ Perubahan berhasil disimpan.";
@@ -2183,22 +2076,26 @@ async function savePetugasMaster(e){
   const payload={client_code:"GEPARU",nama_petugas:document.getElementById("pmNama").value.trim(),whatsapp:document.getElementById("pmWhatsapp").value.trim()||null,jabatan:document.getElementById("pmJabatan").value.trim()||null,username:document.getElementById("pmUsername").value.trim()||null,status:document.getElementById("pmStatus").value,catatan:document.getElementById("pmCatatan").value.trim()||null};
   if(!payload.nama_petugas){alert("Nama petugas wajib diisi.");return;}
   const submit=e.submitter; if(submit){submit.disabled=true;submit.textContent="Menyimpan...";}
-  const isEdit=!!id;
-  const beforePetugas=isEdit?petugasMasterData.find(x=>String(x.id)===String(id))||{}:{};
   try{
-    if(isEdit){
+    if(id){
+      const before=petugasMasterData.find(x=>String(x.id)===String(id));
       const res=await fetch(PETUGAS_DB_URL+"?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:petugasHeaders({"Prefer":"return=representation"}),body:JSON.stringify(payload)});
       if(!res.ok)throw new Error(await res.text());
+      const changes=[];
+      if(before){
+        if(String(before.nama_petugas||"")!==String(payload.nama_petugas||""))changes.push("nama");
+        if(String(before.whatsapp||"")!==String(payload.whatsapp||""))changes.push("WhatsApp");
+        if(String(before.jabatan||"")!==String(payload.jabatan||""))changes.push("jabatan");
+        if(String(before.username||"")!==String(payload.username||""))changes.push("username");
+        if(String(before.status||"")!==String(payload.status||""))changes.push("status");
+        if(String(before.catatan||"")!==String(payload.catatan||""))changes.push("catatan");
+      }
+      await writeActivityLog({action:"UPDATE",description:`Mengedit petugas: ${payload.nama_petugas}${changes.length?" (mengubah "+changes.join(", ")+")":""}`});
     }else{
       const res=await fetch(PETUGAS_DB_URL,{method:"POST",headers:petugasHeaders({"Prefer":"return=representation"}),body:JSON.stringify(payload)});
       if(!res.ok)throw new Error(await res.text());
+      await writeActivityLog({action:"CREATE",description:`Menambahkan petugas: ${payload.nama_petugas}`});
     }
-
-    await writeActivityLog(
-      isEdit ? "UPDATE" : "INSERT",
-      isEdit ? describePetugasChanges(beforePetugas,payload) : "Menambahkan petugas baru: " + payload.nama_petugas
-    );
-
     await loadPetugasFromSupabase();
     closePetugasMasterModal();
   }catch(err){alert("Gagal menyimpan petugas ke Supabase.\n\n"+err.message)}
@@ -2212,30 +2109,17 @@ async function togglePetugasMaster(id){
   try{
     const res=await fetch(PETUGAS_DB_URL+"?id=eq."+encodeURIComponent(decoded),{method:"PATCH",headers:petugasHeaders({"Prefer":"return=minimal"}),body:JSON.stringify({status:next})});
     if(!res.ok)throw new Error(await res.text());
-
-    await writeActivityLog(
-      "UPDATE",
-      next==="NONAKTIF"
-        ? "Menonaktifkan petugas: " + (p.nama_petugas||"-")
-        : "Mengaktifkan petugas: " + (p.nama_petugas||"-")
-    );
-
+    await writeActivityLog({action:"UPDATE",description:`${next==="AKTIF"?"Mengaktifkan":"Menonaktifkan"} petugas: ${p.nama_petugas||"Tanpa nama"}`});
     await loadPetugasFromSupabase();
   }catch(err){alert("Gagal mengubah status petugas.\n\n"+err.message)}
 }
 async function deletePetugasMaster(id){
   const decoded=decodeURIComponent(id),p=petugasMasterData.find(x=>String(x.id)===String(decoded));if(!p)return;
-  const namaPetugas=p.nama_petugas||"-";
-  const ok=confirm(`Hapus petugas "${namaPetugas||"ini"}"?\n\nData akan dihapus permanen dari tabel petugas_geparu.`);if(!ok)return;
+  const ok=confirm(`Hapus petugas "${p.nama_petugas||"ini"}"?\n\nData akan dihapus permanen dari tabel petugas_geparu.`);if(!ok)return;
   try{
     const res=await fetch(PETUGAS_DB_URL+"?id=eq."+encodeURIComponent(decoded),{method:"DELETE",headers:petugasHeaders({"Prefer":"return=minimal"})});
     if(!res.ok)throw new Error(await res.text());
-
-    await writeActivityLog(
-      "DELETE",
-      "Menghapus petugas: " + namaPetugas
-    );
-
+    await writeActivityLog({action:"DELETE",description:`Menghapus petugas: ${p.nama_petugas||"Tanpa nama"}`});
     await loadPetugasFromSupabase();
   }catch(err){alert("Gagal menghapus petugas.\n\n"+err.message)}
 }
