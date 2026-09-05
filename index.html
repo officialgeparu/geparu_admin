@@ -888,13 +888,13 @@ let currentAdminEmail = sessionStorage.getItem("geparu_admin_email") || "";
 let dashboardStarted = false;
 
 function authHeaders(extra={}){
-  // DATA GEPARU tetap menggunakan akses database yang sama seperti
-  // dashboard baseline yang sudah terbukti membaca 8 aduan.
-  // Login Google hanya menjadi lapisan autentikasi dashboard,
-  // bukan mengganti Authorization database dengan token user.
+  // Gunakan JWT milik admin yang sedang login agar Supabase dapat
+  // mengetahui siapa pelaku perubahan melalui auth.uid() / auth.jwt().
+  // Jika belum ada sesi, fallback ke publishable key hanya untuk akses publik.
+  const token = currentAccessToken || SUPABASE_PUBLISHABLE_KEY;
   return Object.assign({
     "apikey": SUPABASE_PUBLISHABLE_KEY,
-    "Authorization": "Bearer " + SUPABASE_PUBLISHABLE_KEY,
+    "Authorization": "Bearer " + token,
     "Accept": "application/json"
   }, extra);
 }
