@@ -5346,7 +5346,511 @@ window.GEPARU_BERITA = {
 
 })();
 </script>
+<!-- =========================================================
+     GEPARU BERITA — STATISTIK VIEW
+     TAMBAHAN AMAN - TIDAK MENGUBAH KODE BERITA YANG SUDAH ADA
+     ========================================================= -->
 
+<style>
+
+/* KOLOM VIEW BERITA */
+
+.gb-view-head{
+  text-align:center !important;
+  white-space:nowrap;
+}
+
+.gb-view-cell{
+  text-align:center;
+  white-space:nowrap;
+}
+
+
+/* BADGE VIEW */
+
+.gb-view-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+
+  min-width:70px;
+
+  padding:7px 10px;
+
+  border-radius:999px;
+
+  background:#eef6ff;
+
+  color:#2563eb;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  border:1px solid #d6e8ff;
+}
+
+
+.gb-view-badge .gb-eye{
+  font-size:14px;
+}
+
+
+/* EFEK SAAT LOADING */
+
+.gb-view-loading{
+  opacity:.55;
+}
+
+</style>
+
+
+<script>
+
+(function(){
+
+"use strict";
+
+
+/* =========================================================
+   KONFIGURASI SUPABASE
+   ========================================================= */
+
+const VIEW_SUPABASE_URL =
+  (typeof SUPABASE_URL !== "undefined")
+  ? SUPABASE_URL
+  : "https://fysaxpqpqexjnlpkbwap.supabase.co";
+
+
+const VIEW_SUPABASE_KEY =
+  (typeof SUPABASE_PUBLISHABLE_KEY !== "undefined")
+  ? SUPABASE_PUBLISHABLE_KEY
+  : "sb_publishable_DWRaEZTcNMjhglwN3nqCOw_pua8rsjD";
+
+
+/* =========================================================
+   AMBIL DATA VIEW BERITA
+   ========================================================= */
+
+async function loadBeritaViews(){
+
+  try{
+
+    let token = VIEW_SUPABASE_KEY;
+
+
+    try{
+
+      if(
+        typeof currentAccessToken !== "undefined" &&
+        currentAccessToken
+      ){
+
+        token = currentAccessToken;
+
+      }
+
+    }catch(e){}
+
+
+    const response =
+      await fetch(
+
+        VIEW_SUPABASE_URL +
+        "/rest/v1/berita" +
+        "?select=id,judul,view_count",
+
+        {
+
+          headers:{
+            "apikey":VIEW_SUPABASE_KEY,
+            "Authorization":"Bearer " + token
+          },
+
+          cache:"no-store"
+
+        }
+
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Gagal mengambil statistik view"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    return Array.isArray(data)
+      ? data
+      : [];
+
+
+  }catch(error){
+
+    console.warn(
+      "Statistik view belum dapat dimuat:",
+      error
+    );
+
+    return [];
+
+  }
+
+}
+
+
+/* =========================================================
+   TAMBAHKAN HEADER VIEW
+   ========================================================= */
+
+function addViewHeader(){
+
+  const table =
+    document.querySelector(
+      "#geparuBeritaPanel .gb-table"
+    );
+
+
+  if(!table) return;
+
+
+  const headerRow =
+    table.querySelector("thead tr");
+
+
+  if(!headerRow) return;
+
+
+  if(
+    headerRow.querySelector(
+      ".gb-view-head"
+    )
+  ){
+    return;
+  }
+
+
+  const th =
+    document.createElement("th");
+
+
+  th.className =
+    "gb-view-head";
+
+
+  th.innerHTML =
+    "👁 Views";
+
+
+  /*
+    Letakkan sebelum kolom Aksi
+  */
+
+  const aksiHeader =
+    Array.from(
+      headerRow.children
+    )
+    .find(
+      el =>
+        el.textContent
+        .trim()
+        .toLowerCase()
+        .includes("aksi")
+    );
+
+
+  if(aksiHeader){
+
+    headerRow.insertBefore(
+      th,
+      aksiHeader
+    );
+
+  }else{
+
+    headerRow.appendChild(th);
+
+  }
+
+}
+
+
+/* =========================================================
+   PASANG VIEW KE SETIAP BARIS BERITA
+   ========================================================= */
+
+async function updateViewStatistics(){
+
+  const panel =
+    document.getElementById(
+      "geparuBeritaPanel"
+    );
+
+
+  if(!panel) return;
+
+
+  const tbody =
+    document.getElementById(
+      "gbTableBody"
+    );
+
+
+  if(!tbody) return;
+
+
+  const rows =
+    Array.from(
+      tbody.querySelectorAll("tr")
+    );
+
+
+  if(!rows.length) return;
+
+
+  addViewHeader();
+
+
+  const berita =
+    await loadBeritaViews();
+
+
+  if(!berita.length) return;
+
+
+  rows.forEach(function(row){
+
+
+    /*
+      Jangan proses baris loading /
+      empty state
+    */
+
+    if(row.children.length < 3){
+      return;
+    }
+
+
+    /*
+      Cari judul berita dari kolom
+      kedua
+    */
+
+    const titleCell =
+      row.children[1];
+
+
+    if(!titleCell) return;
+
+
+    const judul =
+      titleCell.textContent
+      .trim();
+
+
+    if(!judul) return;
+
+
+    /*
+      Cari berita yang sesuai
+    */
+
+    const item =
+      berita.find(
+        b =>
+          String(b.judul || "")
+          .trim() === judul
+      );
+
+
+    const views =
+      Number(
+        item?.view_count || 0
+      );
+
+
+    /*
+      Jangan menambahkan kolom dua kali
+    */
+
+    let viewCell =
+      row.querySelector(
+        ".gb-view-cell"
+      );
+
+
+    if(!viewCell){
+
+      viewCell =
+        document.createElement("td");
+
+
+      viewCell.className =
+        "gb-view-cell";
+
+
+      /*
+        Masukkan sebelum kolom aksi
+      */
+
+      const aksiCell =
+        row.lastElementChild;
+
+
+      if(aksiCell){
+
+        row.insertBefore(
+          viewCell,
+          aksiCell
+        );
+
+      }else{
+
+        row.appendChild(
+          viewCell
+        );
+
+      }
+
+    }
+
+
+    viewCell.innerHTML =
+      `
+      <span class="gb-view-badge">
+
+        <span class="gb-eye">
+          👁
+        </span>
+
+        ${views.toLocaleString("id-ID")}
+
+      </span>
+      `;
+
+
+  });
+
+}
+
+
+/* =========================================================
+   OBSERVER
+
+   Memantau saat tabel berita selesai
+   dimuat oleh sistem lama.
+   ========================================================= */
+
+let viewTimer = null;
+
+
+function scheduleViewUpdate(){
+
+  clearTimeout(viewTimer);
+
+
+  viewTimer =
+    setTimeout(function(){
+
+      updateViewStatistics();
+
+    },300);
+
+}
+
+
+function startViewObserver(){
+
+  const tbody =
+    document.getElementById(
+      "gbTableBody"
+    );
+
+
+  if(!tbody){
+
+    setTimeout(
+      startViewObserver,
+      500
+    );
+
+    return;
+
+  }
+
+
+  addViewHeader();
+
+
+  const observer =
+    new MutationObserver(
+      function(){
+
+        scheduleViewUpdate();
+
+      }
+    );
+
+
+  observer.observe(
+    tbody,
+    {
+      childList:true,
+      subtree:true
+    }
+  );
+
+
+  scheduleViewUpdate();
+
+}
+
+
+/* =========================================================
+   MULAI SISTEM
+   ========================================================= */
+
+if(
+  document.readyState === "loading"
+){
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+      setTimeout(
+        startViewObserver,
+        700
+      );
+
+    }
+  );
+
+}else{
+
+  setTimeout(
+    startViewObserver,
+    700
+  );
+
+}
+
+
+})();
+
+</script>
+
+<!-- =========================================================
+     END GEPARU BERITA — STATISTIK VIEW
+     ========================================================= -->
 <!-- =========================================================
      END GEPARU BERITA ADMIN
      ========================================================= -->
