@@ -922,25 +922,9 @@ async function getCurrentActor(){
 }
 
 async function writeActivityLog({action,description,status="SUCCESS",module="SOSIAL"}){
-  try{
-    const actor=await getCurrentActor();
-    const payload={
-      module_slug:module,
-      action:String(action||"UPDATE").toUpperCase(),
-      description:String(description||"Aktivitas dashboard"),
-      status:String(status||"SUCCESS").toUpperCase(),
-      actor_email:actor.email||null,
-      admin_email:actor.email||null,
-      user_id:actor.userId||null
-    };
-    const res=await fetch(ACTIVITY_LOG_URL,{method:"POST",headers:authHeaders({"Content-Type":"application/json","Prefer":"return=minimal"}),body:JSON.stringify(payload)});
-    if(!res.ok){
-      const detail=await res.text().catch(()=>"");
-      console.warn("Activity Log gagal disimpan:",res.status,detail,payload);
-      return false;
-    }
-    return true;
-  }catch(e){ console.warn("Activity Log error:",e); return false; }
+  // Activity utama dicatat otomatis oleh trigger Supabase.
+  // Jangan membuat log kedua dari browser agar tidak terjadi duplikasi.
+  return true;
 }
 
 function showAdminLogin(message="", isError=true){
@@ -2023,7 +2007,16 @@ function savePetugasMasterData(){localStorage.setItem(PETUGAS_MASTER_STORAGE_KEY
 function escPetugas(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;")}
 
 const PETUGAS_DB_URL=SUPABASE_URL+"/rest/v1/petugas_geparu";
-function petugasHeaders(extra={}){return Object.assign({"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json","Accept":"application/json"},extra)}
+function petugasHeaders(extra={}){
+  // Pakai JWT admin yang sedang login supaya trigger Supabase mengetahui pelaku.
+  const token=currentAccessToken || SUPABASE_PUBLISHABLE_KEY;
+  return Object.assign({
+    "apikey":SUPABASE_PUBLISHABLE_KEY,
+    "Authorization":"Bearer "+token,
+    "Content-Type":"application/json",
+    "Accept":"application/json"
+  },extra)
+}
 
 async function loadPetugasFromSupabase(){
   const res=await fetch(PETUGAS_DB_URL+"?select=*&order=created_at.desc",{headers:petugasHeaders()});
